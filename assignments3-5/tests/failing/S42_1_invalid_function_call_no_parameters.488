@@ -1,0 +1,9 @@
+% Invalid call to function that has no parameters
+% @ line 8
+{
+    function a1 : Integer
+    {
+        return with 5
+    }
+    a1(200, true)
+}

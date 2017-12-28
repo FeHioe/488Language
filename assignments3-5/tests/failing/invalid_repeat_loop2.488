@@ -1,0 +1,7 @@
+% Repeat loop - no statement
+% Errors on line 6
+{
+	var i : Integer
+	i := 0
+	repeat i := i + 1 until 
+}

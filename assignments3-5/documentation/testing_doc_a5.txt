@@ -1,0 +1,35 @@
+Testing Document (Assignment 5 Specific Details)
+
+For assignment 5 we enhanced the test cases we created for assignment 3 to test
+code generation. For every test that passes semantic analysis (i.e. every test
+in the tests/passing folder) we added write statements to produce output to check
+that each construct was implemented correctly. For example we would print one
+word in the if-clause of an if-statement and another word in the else-clause.
+Similarly for arithmetic expressions and loops we would print the result of the
+expression or the number of times the loop iterated. We then created a corresponding
+.out file with the expected output of each test.
+
+Our tests are structured as black box tests. We check the execution of the compiled program
+rather than the machine instructions themselves. We took this approach because it was very tedious to
+hand code even relatively small test cases and the tests were prone to breaking when changes were
+made to our codegen templates. We feel this black box style of testing
+is sufficient because we observed that even minor errors in code generation (eg. missing one PUSH instruction)
+would cause the compiled program to crash (eg. due to stack corruption) or produce the wrong output.
+
+Our unit_test.py script automatically executes each passing test through the code
+generation and machine execution stages. Our test script performs two checks on each test:
+
+1) It checks that no exception was raised during the code generation phase or the execution
+   phase (i.e. it checks the program executed successfully).
+
+2) It diffs the output of each test program with the corresponding .out file to verify that
+   the output matches.
+
+For tests that incorporated the read statement (e.g. A1e.488) we performed manually testing because it was
+difficult to add functionality to our test script to send input to the program automatically.
+
+We did not add any failing tests for code generation because we did not add any error checks that
+would be ouput when processing a semantically correct program. The exceptions we throw in our CodeGen
+code were mostly used to catch programming mistakes on the compiler's side rather than the
+compiled program's side. Our codegen also assumes it is executed on a semantically correct program so it
+didn't make sense to run any of the tests in the failing folder through codegen.

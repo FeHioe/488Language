@@ -1,0 +1,8 @@
+% Different expression and variable types when assigning
+% @ lines after 6
+{
+    var i : Integer
+    var j : Boolean
+    i := true
+    j := 5
+}

@@ -1,0 +1,9 @@
+% Non Integer output for function
+% @ line 8
+{
+    function a1 (x : Integer): Integer
+    {
+        return with true
+    }
+    a1(10)
+}

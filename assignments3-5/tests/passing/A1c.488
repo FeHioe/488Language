@@ -1,0 +1,177 @@
+% Assignment 1 Part C: a program using all forms of loop building and loop exit constructs.
+% Author: Felicia Hioe - CDF: hioefeli
+
+% Main program scope begins
+% Code was intentionally written with different styles to add more variability for the compiler testcases
+{
+	var i : Integer
+	var j : Integer
+
+	% While loop - expression true
+	i := 0
+	while i < 10 do i := i + 1
+	write i, " WhileLoop (true) - Expected i = 10", newline
+	
+	% While loop - expression false
+	i := 5
+	while i > 10 do i := i + 1 % Should not execute
+	write i, " WhileLoop (false) - Expected i = 5", newline
+
+	% While loop - exit
+	i := 0
+	while i < 10 do
+	{
+		if i < 15 then i := i + 1 else exit
+	}
+	write i, " WhileLoop (exit) - Expected i = 10", newline
+
+	% While loop - exit when
+	i := 0
+	while i < 10 do
+	{
+		i := i + 1
+		exit when i = 4
+	}
+	write i, " WhileLoop (exit when) - Expected i = 4", newline
+	
+	% While loop - nested
+	i := 0
+	while i < 10 do {
+		i := i + 1
+		j := 0
+		while j < 10  do
+		{
+			j := j + 2
+		}
+	}
+	write j, " WhileLoop (nested) - Expected j = 10", newline
+	write i, " WhileLoop (nested) - Expected i = 10", newline
+
+	% While loop - nested integer exit
+	i := 0
+	while i < 10 do
+	{
+		i := i + 1
+		j := 0
+		while j < 10  do
+		{
+			j := j + 2
+			exit 2 % exit both loops
+		}
+	}
+	write j, " WhileLoop (nested integer exit) - Expected j = 2", newline
+	write i, " WhileLoop (nested integer exit) - Expected i = 1", newline
+
+	% While loop - nested integer exit when
+	i := 0
+	while i < 10 do
+	{
+		i := i + 1
+		j := 0
+		while j < 10  do
+		{
+			j := j + 2
+			exit 2 when i = 4 % exit both loops
+		}
+	}
+	write j, " WhileLoop (nested integer exit when) - Expected j = 2", newline
+	write i, " WhileLoop (nested integer exit when) - Expected i = 4", newline
+
+	% Repeat loop
+	i := 0
+	repeat i := i + 1 until i = 10
+	write i, " Repeat - Expected i = 10", newline
+
+	% Repeat loop - exit
+	i := 0
+	repeat
+	{
+		if i < 5 then i := i + 1 else exit
+	} until i = 10
+	write i, " Repeat (exit) - Expected i = 5", newline
+
+	% Repeat loop - exit when
+	i := 0
+	repeat
+	{
+		i := i + 1
+		exit when i = 4
+	} until i = 10
+	write i, " Repeat (exit when) - Expected i = 4", newline
+
+	% Repeat loop - nested
+	i := 0
+	repeat
+	{
+		i := i + 1
+		j := 0
+		repeat j := j + 1 until j = 5
+	} until i = 10
+	write j, " Repeat (nested) - Expected j = 5", newline
+	write i, " Repeat (nested) - Expected i = 10", newline
+
+	% Repeat loop - nested integer exit
+	i := 0
+	repeat
+	{
+		i := i + 1
+		j := 0
+		repeat
+		{
+			if j < 3 then j := j + 1 else exit 1 % exit one loop
+		} until j = 5
+	} until i = 10
+	write j, " Repeat (nested integer exit) - Expected j = 3", newline
+	write i, " Repeat (nested integer exit) - Expected i = 10", newline
+
+	% Repeat loop - nested integer exit when
+	i := 0
+	repeat
+	{
+		i := i + 1
+		j := 0
+		repeat
+		{
+			j := j + 1
+			exit 2 when i = 4 % exit both loops
+		} until j = 5
+	} until i = 10
+	write j, " Repeat (nested integer exit when) - Expected j = 1", newline
+	write i, " Repeat (nested integer exit when) - Expected i = 4", newline
+
+	% Mixing while and repeat loops
+	i := 0
+	j := 0
+
+	while i < 10 do
+	{
+	    var m : Integer
+	    m := 16
+
+		repeat
+		{
+			j := j + 1
+            m := m - 2
+		} until m < 5
+		i := i + 1
+	}
+	write j, " Mix while and repeat loops - Expected j = 60", newline
+	write i, " Mix while and repeat loops - Expected i = 10", newline
+
+	% Mixing while and repeat with exits
+	while i < 10 do
+	{
+		repeat
+		{
+			j := j + 1
+			exit 2 when i = 4 % exit both loops
+
+		} until j = 5
+		i := i + 1
+	}
+	write j, " Mix while and repeat loops with exits - Expected j = 60", newline
+	write i, " Mix while and repeat loops with exits - Expected i = 10", newline
+}
+
+
+% Main program scope ends

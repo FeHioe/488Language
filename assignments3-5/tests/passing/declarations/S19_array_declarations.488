@@ -1,0 +1,9 @@
+% different ways of array declaration
+% S19: check upper and lower bounds
+{
+  var arr1 [2]: Integer
+  var arr2 [-4000..4000]: Integer
+  write 1, newline
+  arr2[4000] := 999
+  write arr2[4000]
+}

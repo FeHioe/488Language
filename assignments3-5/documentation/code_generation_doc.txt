@@ -1,0 +1,175 @@
+Index of Java classes added or modified for code generation step.
+"high-level stuff (the flow, which classes do what, stuff like that)" @151
+
+compiler488/
+    ast/stmt/
+        Scope.java                  - modified to include a reference to its corresponding SymbolTable instance
+
+    codegen/
+        CodeGen.java                - implemented what was discussed in assignment 4 in here
+                                    - majority of work was done here
+                                    - subclass of VisitorBase
+        CodeGenErrorException.java  - RuntimeException subclass for reporting errors during CodeGen
+
+    compiler/
+        Main.java                   - main driver for the CSC488S compiler
+                                      invokes Lexical Analysis, Syntax Analysis,
+                                      Semantic Analysis, and Code Generation.
+
+    parser/
+        csc488.cup                  - updated to apply consistent capitalization for opSymbol in expressions
+
+    semantics/
+        SemanticErrorException.java - minor change to improve encapsulation
+                                    - Exception subclass for reporting semantic errors
+        Semantics.java              - improved construction of symbol table to better facilitate
+                                      use in codegen step (minor scopes no longer increase the lexical level)
+                                    - fixed minor bugs detected in test results for A3
+                                    - Subclass of VisitorBase
+
+    symbol/
+        LogicalAddress.java         - added method for modifying the order number
+                                    - order number re-purposed to to store the address of the first instruction
+                                      of a procedure/function for symbols with CallableSymbolType
+        SymbolTable.java            - changed to use a hash-table for associating child scopes to a SymbolTable
+                                    - lexical number no longer increases for minor scopes
+                                    - order number now continues from where the parent scope left off for minor scopes
+                                    - order number now increases by the size of the array when an array
+                                      symbol is added to the symbol table. the order number now accurately
+                                      reflects the offset in words from the end of the control data in an activation
+                                      record where the symbol is allocated
+        SymbolTableEntry.java       - insignificant change
+        ArraySymbolType.java        - insignificant change
+
+    visitor/
+        VisitorBase.java            - added global symbol table member variable since both
+                                      Semantics and Codegen require it
+
+Code Generation Design Overview
+-------------------------------------
+
+For code generation the majority of our work was done in CodeGen.java.
+We did choose to structure our code generation into the individually numbered codegen actions
+described in codegen.pdf.
+Instead we chose to implement the codegen templates that we designed in A4 for each construct.
+
+We leveraged the reflective visitor pattern we originally created for semantic analysis. When we call the
+visit methods for each AST node in the CodeGen class we wrote the instructions required
+for implementing that construct starting at the next available machine memory location. Visit methods
+were called within other visit methods to enable a depth-first traversal starting at the Program node.
+
+We implemented the templates described in our A4 document except for the following changes:
+
+1) We no longer emit a common routine prologue/epilogue that is branched to at the callsite of every
+   procedure/function call. We made this change because it reduces the complexity of the prologue/epilogue.
+   In our original design we had to push and pop multiple values from the stack which was error prone.
+   Furthermore, reading and writing to the display requires using the
+   ADDR and SETD instructions. Both those instructions take arguments set at compile time rather than
+   getting arguments from the runtime stack. Therefore, it's not possible to use the same prologue/epilogue
+   for different function/procedure calls. We use a helper function to emit a customized prologue/epilogue
+   with the correct *LL* values at each callsite.
+
+2) We greatly simplified our display update strategy. We no longer keep a copy of the display registers in
+   the constant section of memory. That was a mistake in our original design as we didn't realize we could
+   just read it from the display directly using the ADDR *LL* 0 instruction. This greatly simplified our
+   routine prologue/epilogue.
+
+3) We no longer update and read a frame pointer stored in the constants/data section of memory. Instead we
+   read the frame pointer directly from the display when we need it. This simplified our routine epilogue/
+   prologue code as well.
+
+4) We fixed the issues with double evaluation in 'a <= b' and 'a >= b' expressions by implementing
+   them as 'not (b < a)', and 'not (a < b)' respectively. We maintained the original left to right
+
+
+5) We implemented logical negation using the OR instruction to avoid relying on the values of MACHINE_TRUE
+   and MACHINE_FALSE.
+
+6) The constants/data section of memory now only stores text constants. Previously it stored some
+   extra values like a copy of the display registers and a frame pointer.
+
+Activation Record Structure
+---------------------------------
+
+The final activation record structure we implemented is show below:
+
+    --------------------
+... |   Params/Locals  |
+  3 |                  |
+    --------------------
+  2 |   Return Address |
+    --------------------
+  1 |   Old Display    |
+    --------------------
+  0 |   Return Value   |
+    --------------------
+
+Each number on the left side represents the number of words after the base address of the activation
+record.
+
+'Old Display' stores the address that occupied DISPLAY[LL] before this routine was called.
+LL is the the lexical level of this routine.
+The old display value will be restored to DISPLAY[LL] upon returning from a routine.
+
+'Return Address' stores the address of the next instruction to be executed after this routine
+returns.
+
+Note that the return value is allocated even for procedure calls to unify the code
+for function and procedure calls at the cost of wasting one word of space per procedure call.
+
+PC, MSP, and MLP updates
+------------------------------
+
+Our compiled programs are implemented as a call to a routine at lexical level 0 with no parameters.
+The PC is set to the address of the first instruction of the prologue for this "main program routine". The PC
+is usually just 0.
+
+The MSP is incremented by one word each time we write an instruction to machine memory. We use a helper function
+in the CodeGen class so we don't miss any MSP updates.
+
+The MLP is decremented each time we encounter a new text constant. For each character in the text constant plus
+the null terminator we decrement the MLP by one word.
+
+At the end of the code generation we set the MSP, MLP, and PC to the appropriate variables in the Machine.
+
+Address patching and exit statements
+---------------------------------------
+
+We created a GenData data structure that stores the starting address of each construct and the addresses
+of any values that needed to be patched. In each visit function the startAddr field of the GenData
+instance associated with that construct was updated. An example of when we used the GenData struct is for
+implementing if-statements. The BF instruction following the evaluation of an if-statement's expression
+had to be patched with the address of the first instruction in the false clause (or the address of the first
+instruction after the if-statement if there was no else clause). We used the startAddr of the false clause
+to patch the value to branch to.
+
+Exit statements in loops were trickier to implement as passing back a list of addresses in the GenData struct
+over multiple levels was difficult. Instead we designed a LoopData struct that stores a list of memory locations
+that need to be patched to the first instruction after a loop. The CodeGen class keep a stack of LoopData
+in a member variable. When a LoopingStmt is visited in an AST traversal a new LoopData instance is pushed to the
+top of the stack. Each time an exit statement was visited it would add the address of any values that need to be
+patched to the LoopData of the appropriate loop (eg. for a regular 'exit' statement it would add the value to
+topmost LoopData while an 'exit 3' statement would add it to the 3rd topmost LoopData in the stack). At the
+end of a visit function to a LoopingStmt the topmost LoopData would be popped off and all the values would be
+patched with the address of the first instruction after the loop.
+
+
+Nested routine declarations
+----------------------------------------
+
+Nested routine declarations were a tricky construct we had not considered in A4. The instructions
+for a nested routine declaration had to be embedded within its parent routine due to the nature of the
+depth-first AST traversal. However, we did not want the embedded declaration to be executed during
+the execution of the parent routine. We solved this issue by emitting a BR instruction immediately before
+each nested routine declaration. The branch would jump to the first instruction following the nested declaration.
+This solution allowed us to handle any arbitrary level of nesting. We could not find an elegant
+solution of separating out nested declarations from their parent's instructions but we found our solution worked
+very well and was very simple.
+
+
+Symbol Table
+-----------------------------------------
+
+We re-used the symbol tables that were generated during semantic analysis. Therefore, we did not have to
+re-add variable or function/procedure declarations to the symbol table. We were also able to leverage the
+logical addresses assigned to each variable during semantic analysis for code generation (eg. for .

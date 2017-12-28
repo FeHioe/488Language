@@ -1,0 +1,19 @@
+% Attempt to assign scalar value that was declared in a loop outside of the scope of the loop
+% @ line 17
+{
+    var p, q : Boolean
+    var i , j : Integer
+    function F : Integer{  return with  i  }
+    procedure G  { return }
+    repeat {
+       var z : Integer
+       exit when p
+       {
+          exit when q
+       }
+       exit
+    } until true
+
+    z := 0
+}
+

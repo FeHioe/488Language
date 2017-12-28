@@ -1,0 +1,5 @@
+5 Array IntConstExpn - Expected arr_base[1] = 5
+-1 Array IntConstExpn - Expected arr_base[2] = -1
+4 Array SubsExpn - Expected arr_base[5 - 1] = 4
+10 Array Indexing - Expected arr_base[arr_base[1]] = 10
+

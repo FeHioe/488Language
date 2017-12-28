@@ -1,0 +1,9 @@
+% Incorrect argument type for procedure
+% @ line 8
+{
+    procedure a1 (x : Boolean)
+    {
+        return
+    }
+    a1(5)
+}

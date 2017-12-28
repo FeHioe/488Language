@@ -1,0 +1,6 @@
+% Return outside of procedure
+%  @ line 5
+{
+    procedure noop{}
+    return
+}

@@ -1,0 +1,10 @@
+% Return outside of procedure, within function
+%  @ line 6
+{
+    function a1: Integer
+    {
+        write "test"
+        return with 5
+    }
+    return with 5            
+}

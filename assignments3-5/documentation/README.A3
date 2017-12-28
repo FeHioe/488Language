@@ -1,0 +1,25 @@
+Group member contributions:
+===============================
+
+Ishtiaque Khaled:
+- Worked on semantic analysis, doing over half of the S?? semantic analysis actions
+- Helped modify certain parts of the AST
+
+James Yuan:
+- Worked on AST construction
+- Implemented reflective visitor pattern and AST traversal for semantic analysis
+- Implemented half of the S?? semantic analysis actions
+- Added type links to symbol table entries
+
+Felicia Hoie:
+- Implemented symbol table
+- Worked on testing
+
+Dawing Cho:
+- Worked on the symbol table with Felicia
+- Wrote failing tests, fixed bad tests, and improved test documentation
+
+Sunny Li:
+- Implemented initial AST construction
+- Added new tests, test documentation and performed testing
+- Added automatic testing script

@@ -1,0 +1,24 @@
+% A1 Part A Negative Testing: a program that uses all arithmetic, logical and comparison operators and fails all compilation tests
+% Author: Ishtiaque Khaled - CDF: khaledi1
+
+
+% Main program scope
+% Code was intentionally written with different styles to add more variability for the compiler testcases
+{
+  var a : Integer
+  % Arithmetic operations
+  % Written with various whitespaces between operators and variables
+  a :: = 1
+
+  a : -1
+
+  a := --1+1
+
+  a : = 1-1
+
+  a : = b * 1
+
+  a := (1 / 1
+
+  a := (1 + 1 - 1 * 1 / 1))
+}

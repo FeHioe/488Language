@@ -1,0 +1,7 @@
+% Errors that occur when declaring arrays with incorrect bounds
+% Should errors on line 5-6
+% Code was intentionally written with different styles to add more variability for the compiler testcases
+{
+  var missing_lower_bound [..5]: Integer
+  var missing_upper_bound [1..]: Integer
+}

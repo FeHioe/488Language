@@ -1,0 +1,14 @@
+% Declaration of a function with no parameters with the same identifier
+% @ line 10
+
+{
+    function a1 : Integer
+    {
+        return with 1
+    }
+
+    function a1: Integer
+    {
+        return with 2
+    }
+}

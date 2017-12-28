@@ -1,0 +1,2 @@
+% Test multiple child scope with the same parent scope
+{ { var i: Integer i := 1 write i, " " } { var i: Integer i := 2 write i } }

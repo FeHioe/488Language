@@ -1,0 +1,6 @@
+% Test writing text constants and newline
+{
+   write "Hello", newline, "World!"
+
+   write newline, "Again"
+}

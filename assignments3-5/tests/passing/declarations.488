@@ -1,0 +1,45 @@
+% passing s10-s48
+
+{
+    % Declare scalar variable
+    var i : Boolean
+
+    % Declare function with no parameters
+    function a1 : Integer
+    {
+        return with 1
+    }
+
+    % Declare function with parameter
+    function a2 (n : Integer) : Integer
+    {
+        return with n
+    }
+
+    % Declare function with parameter count plus one
+    function a3 (n : Integer, m : Integer) : Integer
+    {
+        return with n + m
+    }
+
+    % Declare procedure with no parameters
+    procedure p1
+    {
+        return
+    }
+
+    % Declare procedure with parameters
+    procedure a6 (x : Boolean)
+    {
+        var y : Boolean
+        y := x
+        return
+    }
+
+    % Declare array variable with specified lower and upper bounds
+    var bounds [-1..5]: Integer
+
+    % Extra statement to satisfy scope Syntax
+    write 1, " Tested in other files", newline
+    
+}

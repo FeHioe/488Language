@@ -1,0 +1,9 @@
+% Invalid use of parameter value for function
+% @ line 6
+{
+    function a1 (x : Boolean) : Integer
+    {
+        return with x[5] + 5
+    }
+    a1(5)
+}

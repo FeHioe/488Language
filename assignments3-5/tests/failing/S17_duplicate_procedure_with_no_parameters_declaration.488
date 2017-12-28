@@ -1,0 +1,14 @@
+% Declaration of a procedure with no parameters with the same identifier
+% @ line 10
+
+{
+    procedure a1 
+    {
+        return 
+    }
+
+    procedure a1
+    {
+        return 
+    }
+}

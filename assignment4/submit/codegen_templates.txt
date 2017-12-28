@@ -1,0 +1,532 @@
+Introduction
+---------------
+
+In this document you will see sample machine code written in the form:
+
+1: INST arg (note1)
+2: INST2 arg1 arg2
+3: <sequence of instructions>
+4: INST 3
+5: INST arg3
+6: INST *X*
+...
+
+The numbers on the left side indicate the simplified machine
+instruction address numbers for the example code. Code in <>
+indicates a sequence of emitted instructions that have already
+been described in another section of the document. Code in <>
+is technically a sequence of instructions but it will only
+occupy one machine address in the simplified examples. Words in ()
+are comments describing that line of code. Arguments in ** are compile
+time known constants.
+
+Address patching will not be explicitly discussed in the below code
+templates. Only the final code we expect to generate
+will be provided.
+
+================================================================================================================
+
+1. Storage
+
+All variables will be addressed by their logical address which is a combination
+of their lexical level and an offset in the number of words after the control data
+in the activation record of the routine they're declared in (see section 3 for details
+on the activation record format).
+
+a) Variables in the main program will be stored in the activation record
+   of the main program after the control data. This will be done for
+   consistency with 1b).
+
+b) Variables in procedures and functions will be stored in the activation
+   record of the routine they're declared in after the control data.
+
+c) Variables in minor scopes will be stored in the activation record of the
+   nearest enclosing major scope (function or procedure).
+
+d) Integer and boolean constants will be pushed directly onto the runtime stack if
+   needed for evaluation (see section 2a).
+   Since integers and booleans only occupy one word, we felt it would be inefficient to
+   store a single copy of them in constant memory above the mlp and load them from memory
+   each time they're referenced.
+
+e) Text constants will be stored in the constant memory above the mlp pointer (see section 5c).
+   Text constants will be addressed by the location of the first character (see section 2a.ii).
+   This saves space if the same text constant is used in multiple locations.
+   The CodeGen class will store a 1:1 hashmap of text constants to the memory address
+   of their first character for easy lookup during codegen. Text constants will be null
+   terminated to mark where they end.
+
+================================================================================================================
+
+2. Expressions
+
+a) Integer and boolean constants will be pushed onto the runtime stack
+   and evaluated, The result of the expression will be placed at the top
+   of the runtime stack.
+
+   i) For example, given the integer constant -3 the following
+      code will be emitted:
+      1: PUSH -3
+
+   ii) For text constants the address of the first character will be pushed
+       1: PUSH *ADDR* (*ADDR* is the address to the first character which can be looked
+                       up in a hash table at compile time)
+
+b) Scalar variables will be addressed by their logical address in the form
+   (lexical level, order number). The lexical level provides an index
+   into the display registers to find the activation record where the variable
+   is stored at runtime. The order number will provide the offset in number
+   of words that the variable is located from the end of the control data in the
+   activation record (i.e. after the return address). The logical address will be
+   determined from the symbol table stored in the CodeGen class. The logical address
+   of a variable can be calculated at compile time since all variables have known sizes.
+   For example, the first parameter to a routine like 'f(a, b)' will be accessed as follows:
+   1: ADDR *LL* 4 (*LL* is the lexical level of f and 4 means it's the first variable after
+                   the control data since the control data occupies 4 words)
+   2: LOAD
+   The second parameter would be accessed as:
+   1: ADDR *LL* 5
+   2: LOAD
+
+c) Array elements will be accessed by first finding the address to the
+   the first element and adding an offset based on the following calculation:
+   result of subscript expression - lower bound
+   Since all array elements in our language occupy one word and there are no multi-
+   dimensional arrays we don't need to scale the offset.
+   Note: We do not explicitly check for out of bound array access, so we will
+   have undefined behavior for out of bound array access like in the language C.
+
+   For an expression of the form 'x[expr]' the following code will be emitted'
+   1: ADDR *LL* *ON* (*LL* and *ON* can be calculated from the logical address of the
+                      first element of the array)
+   2: <instructions to evaluate expr and push it to the top of the stack>
+   3: PUSH *LB* (*LB* is the lower bound of the array and is known at compile time)
+   4: SUB (top of the stack now contains the offset, followed by the address of the first element)
+   5: ADD (top of the stack now contains of the address of the indexed array element)
+   6: LOAD
+
+d) Arithmetic operators will be implemented by first emitting code to
+   evaluate the left operand and then emitting code to evaluate the right operand.
+   For the unary minus operator only one operand will be pushed onto the
+   runtime stack.
+
+   i) For an expression of the form 'a + b' the following code will be emitted:
+      1: <instructions to evaluate operand a and push the result to the top of the runtime stack>
+      2: <instructions to evaluate operand b and push the result to the top of the runtime stack>
+      3: ADD
+
+   ii) For an expression of the form 'a - b' the following code will be emitted:
+       1: <instructions to evaluate operand a and push the result to the top of the runtime stack>
+       2: <instructions to evaluate operand b and push the result to the top of the runtime stack>
+       3: SUB
+
+   iii) For an expression of the form '-a' the following code will be emitted:
+        1: <instructions to evaluate operand a and push the result to the top of the runtime stack>
+        2: NEG
+
+   iv) For an expression of the form 'a * b' the following code will be emitted:
+       1: <instructions to evaluate operand a and push the result to the top of the runtime stack>
+       2: <instructions to evaluate operand b and push the result to the top of the runtime stack>
+       3: MUL
+
+   v) For an expression of the form 'a / b' the following code will be emitted:
+      1: <instructions to evaluate operand a and push the result to the top of the runtime stack>
+      2: <instructions to evaluate operand b and push the result to the top of the runtime stack>
+      3: DIV
+
+e) Comparison operators will be implemented as follows:
+
+   i) For an expression of the form 'a < b' the following code will be emitted:
+      1: <instructions to evaluate operand a and push the result to the top of the runtime stack>
+      2: <instructions to evaluate operand b and push the result to the top of the runtime stack>
+      3: LT
+
+   ii) For an expression of the form 'x <= y' the comparison will be implemented as
+       x < y OR x = y and the following code will be emitted:
+       1: <instructions to evaluate x < y as described in e.i>
+       2: <instructions to evaluate x = y as described in e.iii>
+       3: OR
+
+   iii) For an expression of the form 'a = b' the following code will be emitted:
+        1: <instructions to evaluate operand a and push the result to the top of the runtime stack>
+        2: <instructions to evaluate operand b and push the result to the top of the runtime stack>
+        3: EQ
+
+   iv) For an expression of the form 'x not = y' the comparison will be implemented as
+       x < y OR x > y and the following code will be emitted:
+       1: <instructions to evaluate x < y as described in e.i>
+       2: <instructions to evaluate x > y as described in e.vi>
+       3: OR
+
+   v) For an expression of the form 'x >= y' the comparison will be implemented as
+      x > y OR x = y and the following code will be emitted:
+      1: <instructions to evaluate x > y as described in e.vi>
+      2: <instructions to evaluate x = y as described in e.iii>
+      3: OR
+
+   vi) For an expression of the form 'a > b' the following code will be emitted:
+       1: <instructions to evaluate operand b and push the result to the top of the runtime stack>
+       2: <instructions to evaluate operand a and push the result to the top of the runtime stack>
+       3: LT
+
+f) Boolean operators will push an evaluate their operands onto the runtime stack
+   in the same order as arithmetic operators. Boolean operators will short circuit if possible.
+
+   i) For an expression of the form 'a and b' the following code will be emitted:
+      1: <instructions to evaluate operand a and push the result to the top of the runtime stack>
+      2: PUSH 10 (addr of first instruction in false body)
+      3: BF
+      4: <instructions to evaluate operand b and push the result to the top of the runtime stack>
+      5: PUSH 10 (addr of first instruction in false body)
+      6: BF
+      7: PUSH MACHINE_TRUE
+      8: PUSH 11 (addr of instruction after false body)
+      9: BR
+      10: PUSH MACHINE_FALSE (first instruction in false body)
+      11: <next instructions after this expression>
+
+    ii) For an expression of the form 'a or b' the following code will be emitted:
+        1: <instructions to evaluate operand a and push the result to the top of the runtime stack>
+        2: <instructions to evaluate operand b and push the result to the top of the runtime stack>
+        3: OR
+
+    iii) For an expression of the form 'not a' the following code will be emitted:
+        1: PUSH MACHINE_TRUE (this is 1)
+        2: <instructions to evaluate operand a and push the result to the top of the runtime stack>
+        3: SUB
+
+g) For an expression of the form '(a ? b : c)' the following code will be emitted:
+   1: <instructions to evaluate operand a and push the result to the top of the runtime stack>
+   2: PUSH 7 (addr of first instruction in false body)
+   3: BF
+   4: <instructions to evaluate operand b and push the result to the top of the runtime stack>
+   5: PUSH 8 (addr of instruction after false body)
+   6: BR
+   7: <instructions to evaluate operand c and push the result to the top of the runtime stack>
+      (first instruction in false body)
+   8: <next instructions after this expression>
+
+================================================================================================================
+
+3. Functions and Procedures
+
+In general for this section of the document we refer to procedures and functions collectively
+as "routines". Also PLEASE READ section 5c) before reading this section to familiarize yourself
+with the layout of the constants and misc. data segment of memory.
+
+a) The format of an activation record for a both a procedure and function will be as follows:
+
+    --------------------
+... |   Params/Locals  |
+  4 |                  |
+    --------------------
+  3 |   Return Address |
+    --------------------
+  2 |   Old Display    |
+    --------------------
+  1 |   Dynamic Link   |
+    --------------------
+  0 |   Return Value   |
+    --------------------
+
+   Each number on the left side represents the number of words after the start address of the activation
+   record.
+   'Old Display' stores the starting address of the activation frame that used to occupy DISPLAY[LL]
+   before this routine was called where LL is the the lexical level of this routing.
+   The old display value will be restored to DISPLAY[LL] upon returning.
+   'Dynamic Link' stores the starting address of the activation frame of the caller.
+   'Return Address' stores the address of the next instruction to be executed after this routine
+   returns.
+
+    Note that the return value is allocated even for procedure calls to unify the code for
+    for function and procedure calls at the cost of wasting one word.
+
+b) Please refer to section 3g) before reading this. In the following code examples "M" refers to the
+   last valid index in the machine's memory.
+   The routine entrance (prologue) code is as follows:
+   1: PUSHMT
+   2: PUSH UNDEFINED
+   5: SWAP (return value now at proper memory location and start address of this AR is now at the
+            top of the stack)
+   4: PUSH *M - 32* (M - 32 is max memory index - 32 which we will designate
+                     as the location to store the frame pointer)
+   5: LOAD
+   6: SWAP (Dynamic Link field is now populated with address of caller's AR,
+            and the start address of this AR is at the top of stack)
+   7: PUSH *M - LL* (*M - LL* is the location where we store a copy of the value of DISPLAY[LL])
+   8: LOAD
+   9: SWAP (Old Display field now populated with old value of DISPLAY[LL])
+   10: DUP (Top of stack now contains two copies of this AR's start address)
+   10: PUSH *M - LL*
+   11: SWAP
+   12: STORE (Copy of DISPLAY[LL] now updated)
+   13: PUSH *M-32*
+   14: SWAP
+   15: STORE (Address of current frame pointer now updated at designated memory location)
+
+   The first instructions of the callee will handle allocation of local variables.
+   For examples if there was a function declared as follows:
+
+   function a () : Integer
+   {
+     var x : Integer
+     var y[5] : Integer
+   }
+
+   The following code would be generated inside the function:
+   1: PUSH UNDEFINED (space for variable x)
+   2: PUSH UNDEFINED
+   3: PUSH 5 (5 is the size of the y array. the size of all arrays are
+              known at compile time in our language)
+   4: DUPN (allocate space for the whole y array in the AR)
+
+c) The routine exit (epilogue) code will be stored in the program section of memory and will be executed every time
+   we need to return from a routine. The epilogue code is shared for all routines just like the prologue
+   code. The epilogue code is branched to from the return statement inside the callee.
+   The epilogue code is as follows:
+   1: PUSHMT
+   2: PUSH *M - 33* (address of frame pointer)
+   3: LOAD
+   4: SUB
+   5: PUSH 4 (size of control data in words)
+   6: ADD
+   7: POPN (All variables and parameters in this AR now popped off the stack, return address now at the top)
+   8: SWAP (Old display value now at the top)
+   9: PUSH *M - 33* (*M-33* is the designated location where LL of current routine is stored)
+   10: LOAD
+   11 PUSH *M*
+   12: SWAP
+   13: SUB (Top of stack now contains the address of where the copy of DISPLAY[LL] is stored)
+   14: SWAP (Top of stack now contains the old display value)
+   15: STORE (Copy of DISPLAY[LL] now updated, top of stack is now the return address again)
+   16: SWAP (Dynamic link is now at the top)
+   17: PUSH *M - 32* (Top of stack now contains address of current frame pointer)
+   18: SWAP (Top of stack now contains dynamic link)
+   19: STORE (Frame pointer now stores starting address of caller's AR, top of stack is now return address)
+   20: BR (Branch to resume execution caller's instruction)
+
+d) Parameters will be evaluated in the caller and pushed into the activation record of the callee following
+   the control data (i.e. after the return address). See 3e for example code. Parameters are passed by
+   value.
+
+e) Function calls (eg. of the form 'f(a, b)') will be implemented as follows:
+   1: PUSHMT
+   2: SETD *LL* (LL is the lexical level of the called routine and is a compile time constant.
+                 This can't be done in the helper routine from 3b) because LL is taken as an argument
+                 rather than from the stack.)
+   3: PUSH *M-33*
+   4: PUSH *LL*
+   5: STORE
+   6: PUSH 9 (return address to continue execution from after calling the helper routine from 3b)
+   7: PUSH *ENTRY* (*ENTRY* is the first instruction address of the prologue routine defined in 3b)
+   8: BR
+   9: PUSH 13 (return address to continue execution from after calling the routine)
+   10: <instructions for evaluating and pushing parameters (if any) as per section 2 in left to right order>
+   11: PUSH *START* (*START* is the first instruction of the called routine and is known at compile time)
+   12: BR
+   13: PUSH *M-33*
+   14: PUSH *SLL* (*SLL* is the lexical level of the caller which is known at compile time,
+                   need to restore this value now that the callee has returned)
+   15: PUSH *M-LL*
+   16: LOAD
+   17: SETD *LL* (restore the old value of DISPLAY[LL]. this can't be done in a helper function since
+                  SETD takes an argument instead of using the stack)
+   18: <remaining instructions in function> (at this point the top of the stack is the return value of the callee)
+
+   This code will be emitted at the callsite in the calling function.
+
+f) Procedure call will be implemented exactly the same as function calls in 3e) for simplicity. The difference
+   is after line 17 there will be a POP instruction to get rid of the unused word reserved for the return
+   value.
+
+g) Since there is no instruction for reading display registers, we will store a copy of the current state
+   of the display registers in the top 32 words of constant/misc memory. Although this design uses
+   extra memory, it greatly simplifies the code for updating the display when entering and exiting
+   a routine call. See 3b), 3c), and 3e) for examples of how this is performed in machine code. This copy
+   of the display registers allows us to implement the constant time display update algorithm.
+
+================================================================================================================
+
+4. Statements
+
+a) Assignment statements of the form 'a := b' (where b is any expression) will be implemented as follows:
+   1: <instructions to evaluate operand b and push the result to the top of the runtime stack>
+   2: ADDR *LL* *ON* (*LL* and *ON* can be calculated from the logical address of a at compile time)
+   3: SWAP
+   4: STORE
+
+b) If statements will be implemented as follows:
+
+   i) For if statements of the form 'if expr then true-stmt':
+      1: <instructions to evaluate expr and push the result to the top of the runtime stack>
+      2: PUSH 5 (address of first instruction after true-stmt)
+      3: BF
+      4: <instructions for implementing true-stmt (i.e. the whole true body)>
+      5: <instructions after the if statement>
+
+   ii) For if statements of the form 'if expr then true-stmt else false-stmt':
+       1: <instructions to evaluate expr and push the result to the top of the runtime stack>
+       2: PUSH 7 (address of first instruction in false-stmt)
+       3: BF
+       4: <instructions for implementing the true body>
+       5: PUSH 8 (address of first instruction after false-stmt (i.e after the whole false body)
+       6: BR
+       7: <instructions for implementing false-stmt (i.e. the whole false body)>
+       8: <instructions after the if statement>
+
+c) While and repeat statements will be implemented as follows:
+
+   i) For while statements of the form 'while expr do loop-body':
+      1: <instructions to evaluate expr and push the result to the top of the runtime stack>
+      2: PUSH 7 (address of first instruction after while loop)
+      3: BF
+      4: <instructions for loop-body>
+      5: PUSH 1
+      6: BR
+      7: <instructions after while loop>
+
+   ii) For repeat statements of the form 'repeat loop-body until expr':
+       1: <instructions for loop-body >
+       2: <instructions to evaluate expr and push the result to the top of the runtime stack>
+       3: PUSH 7 (address of first instruction after repeat loop)
+       4: BF
+       5: PUSH 1
+       6: BR
+       7: <instructions after repeat loop>
+
+d) For exit statements we will track the starting offset in the current AR from where the variables in the loop
+   body are allocated. Upon exit we will pop off words from the AR until we are at the starting offset again.
+   The number of words to pop off can be calculated at compile time. Exit statements will be implemented
+   as follows:
+
+   i) For exit statements of the form 'exit':
+      1: PUSH *X* (*X* is the calculated number of words to pop off to remove all variables from the loop scope)
+      2: POPN
+      3: PUSH *END* (*END* is the address of the first instruction after the loop which is known at compile time)
+      4: BR
+
+   ii) For exit statements of the form 'exit when expr':
+       1: <instructions to evaluate expr and push the result to the top of the runtime stack>
+       2: PUSH 8 (address of first instruction after exit statement)
+       3: BF
+       4: PUSH *X* (*X* is the calculated number of words to pop off to remove all variables from the loop scope)
+       5: POPN
+       6: PUSH *END* (*END* is the address of the first instruction after the loop which is known at compile time)
+       7: BR
+       8: <first instruction after exit statement>
+
+   iii) For exit statements of the form 'exit integer':
+        1: PUSH *X* (*X* is the calculated number of words to pop off to remove all
+                     variables from the integer number of nested loop scopes)
+        2: POPN
+        3: PUSH *END* (*END* is the address of the first instruction after the integer number
+                       of nested loops to exit from which is known at compile time)
+        4: BR
+
+   iv) For exit statements of the form 'exit integer when expr':
+       1: <instructions to evaluate expr and push the result to the top of the runtime stack>
+       2: PUSH 8 (address of first instruction after exit statement)
+       3: BF
+       4: PUSH *X* (*X* is the calculated number of words to pop off to remove all
+                    variables from the integer number of nested loop scopes)
+       5: POPN
+       6: PUSH *END* (*END* is the address of the first instruction after the integer number
+                      of nested loops to exit from which is known at compile time)
+       7: BR
+       8: <first instruction after exit statement>
+
+e) Return statements will be implemented as follows:
+
+   i) For return statements in procedures 'return':
+      1: PUSH *ROUTINE_EXIT* (*ROUTINE_EXIT* is the address of the first instruction in the exit helper
+                              routine specified in 3c)
+      2: BR
+
+   ii) For return statements in procedures functions 'return with expr':
+       1: <instructions to evaluate expr and push the result to the top of the runtime stack>
+       2: PUSH *M-32* (address of frame pointer)
+       3: LOAD
+       4: SWAP
+       5: STORE (store expr at the memory location for the return value)
+       6: PUSH *ROUTINE_EXIT* (*ROUTINE_EXIT* is the address of the first instruction in the epilogue helper
+                               routine specified in 3c)
+       7: BR
+
+f) Read and write statements will be implemented as follow:
+
+   i) For read statement of the form 'read input'
+      1: READI
+      2: ADDR *LL* *ON* (*LL* and *ON* can be calculated from the logical address of the variable)
+      3: SWAP
+      4: STORE
+
+      This code will be repeated for each variable in the input of the read statement.
+
+   ii) For write statements of the form 'write expr':
+       1: <instructions to evaluate expr and push the result to the top of the runtime stack>
+       2: PRINTI
+
+       For write statement of the form 'write text':
+       1: <instructions to get the address of the first character in the text constant
+           as described in 2a.iii>
+       2: DUP
+       3: LOAD
+       4: DUP
+       5: PUSH 0
+       6: EQ (check if the current character is the null terminator)
+       7: PUSH 14 (address of first instruction to exit the loop for printing characters)
+       8: BF
+       9: PRINTC
+       10: PUSH 1
+       11: ADD
+       12: PUSH 2
+       13: BR
+       14: POP (pop off null terminator)
+       15: POP (pop off address of null terminator)
+
+       For write statements of the form 'write newline':
+       1: PUSH 10 (ASCII for newline char)
+       2: PRINTC
+
+       These different forms of write statements will be combined until each argument to the
+       write statement is handled.
+
+g) Upon visiting a new minor scope, the CodeGen class will store the current offset of the runtime
+   stack from the end of the control data in the current activation record. This will be stored
+   in a stack in the CodeGen class. Upon exiting from a scope we will pop off words from the runtime
+   stack until we reach that offset. The number of words to pop off can be calculated at compile time.
+   in a stack structure. The code generated for handling minor scopes are as follows:
+
+   1: <PUSH UNDEFINED for each variable declaration>
+   2: <instructions for executing the statements in the scope>
+   3: PUSH *N* (*N* is the computed number of words to pop off for variables declared in this scope)
+   4: POPN
+
+================================================================================================================
+
+5. Everything Else.
+
+a) The helper routines in 3b and 3c which are used to handle calling and exiting from routines
+   will be stored in the program section of the memory along with the other functions.
+
+   The instructions for the main program routine will be stored in the uppermost section of the program
+   segment of memory.
+
+   The msp pointer will be set to point to the address right after the last instruction. The mlp pointer will be
+   set to be one less than the address of the lowest addressed text constant (see section 5c).
+
+   We will emit extra instructions at the start of the main routine that is equivalent to calling a procedure
+   with no arguments at lexical level 0 (see section 3 for details of general procedure calls). The pc will
+   be set to point to the first instruction of those extra instructions.
+
+   We will emit a HALT instruction at the end of the of main program.
+
+b) Nothing to add for this point.
+
+c) In this section we will describe the structure of the constants and misc data segment of memory.
+   Let M be the highest valid index into the memory array.
+
+   M-0 to M-31: This will contain a copy of the 32 DISPLAY registers.
+   M-32: This will contain the frame pointer (starting address of currently executing AR)
+   M-33: Current lexical level of the executing routine.
+   M-34 to mlp + 1: Text constants.

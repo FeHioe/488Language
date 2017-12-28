@@ -1,0 +1,45 @@
+Action code was added to the .cup file in the parser in order to generate an AST
+as the language is parsed.
+
+Each nonterminal was assigned the most specific AST subclass type that could encompass
+the results of all its productions. For each production the resulting AST node was
+the most specific subclass that could be used for that production.
+
+For example the production:
+matchedStatement ::= variable:v COLON EQUAL expression:e
+
+returns an AssignStmt in the RESULT variable rather than a generic Stmt. This design
+allows the AST to store the specific information that is parsed for each production.
+
+The root of the AST tree is the main program, where all new nodes created
+extend the AST class. The AST is built from the bottom up, where the
+grammar recursively goes down, and moves to the top of the tree when returning a value.
+
+There were also some additions to the AST classes:
+
+1) A Locatable interface was added. This interface allows line and column information
+   to be retrieved from each AST node. Code was also added in the cup file to
+   set the line and column number as each node is constructed.
+
+2) An additional boolean flag was added on the ExitStmt to track whether an integer
+   was specified for the exit or not. Previously it was impossible to differentiate
+   whether the user wrote "exit <level>" or just "exit" where <level> is the default
+   value that the level attribute is initialized to. This is important for semantic
+   analysis because different semantic checks are performed for "exit" vs. "exit <level>"
+   statements.
+
+3) An additional boolean flag was added to ArrayDeclPart to track whether a lower bound
+   was declared or not. This allows the semantic analysis to apply the appropriate
+   semantic checks depending on whether a bounded array was declared or a regular array.
+
+4) The Declaration and DeclarationPart classes now also have a reference to its
+   associated SymbolTableEntry for easy access.
+
+5) The Expn class also has an evalType attribute that stores a reference to its
+   symbol type (BooleanSymbolType or IntegerSymbolType) for easier semantic checks.
+
+For example,
+Grammar rule A := B c d is converted into action code {: RESULT = new A(B, c, d); :}
+where RESULT is the object to be returned and new A(B, c, d) are the parameters and
+constructor of the returned object.
+

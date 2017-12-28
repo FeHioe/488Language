@@ -1,0 +1,8 @@
+% Errors that occur when declaring arrays with incorrect bounds
+% Should error out on lines 5-7
+% Code was intentionally written with different styles to add more variability for the compiler testcases
+{
+  var no_bounds [] : Integer
+  var missing_dot [-1.5]: Integer
+  var invalid_upper_bound [-1..true]: Integer
+}

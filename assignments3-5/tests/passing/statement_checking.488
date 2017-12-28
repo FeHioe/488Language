@@ -1,0 +1,11 @@
+% exit statement in loop and looping number S50 S53
+{
+	var i : Integer
+	i := 0
+	while i < 10 do
+	{
+	i := i + 2
+	    exit when i = 4
+	}
+  write i
+}

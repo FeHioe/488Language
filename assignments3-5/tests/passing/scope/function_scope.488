@@ -1,0 +1,13 @@
+% test function scope
+{
+  % function scope
+  function isEqual ( value1 : Integer, value2 : Integer ) : Boolean {
+    write "value 1 is ", value1, newline
+    write "value 2 is ", value2
+    return with value1 = value2
+  }
+  % statement required in scope when there is declaration
+
+  var x : Boolean
+  x := isEqual(1, 1)
+}

@@ -1,0 +1,53 @@
+Semantic Design Document
+
+We used the Visitor approach from chapter 7 of the textbook for the semantic design
+because it allows all the semantic checks to be implemented in a single file (semantics/Semantic.java).
+According to the textbook this is a better design than adding code to each AST node as it prevents the
+code for each phase of the compiler from being scattered.
+
+We implemented a Reflective Visitor as it reduces boilerplate code in each AST node and Visitor subclass.
+The base class is implemented in visitor/VisitorBase.java. We modified Semantics.java to extend this class.
+This design was more difficult to implement initially but we believe it will pay off when we implement code
+generation.
+
+The Semantics class performs a depth-first walk starting at the Program node and applies semantic checks
+as described in semantics.pdf. In this class we added one helper functions for each semantic action named
+semanticAction??() where ?? is the number of the semantic check. We then overloaded the visit() method to
+perform the actual traversal of the AST. Each visit() method handled a different subclass of AST.
+The appropriate semanticAction?? method was called inside each visit() method.
+
+We created a Java Exception subclass named SemanticErrorException. Each time a semantic error was detected
+we added a new instance of this class to a list stored in the Semantics object. Each exception stored the semantic
+action number and line/col number of the AST node. The full list of errors was printed at the end of the AST
+traversal.
+
+The Semantics object also keeps track of a few other data structures required for semantic checks
+
+1) A stack of SymbolTable objects. A new SymbolTable object was pushed onto the stack and linked as a child
+   of the previous top SymbolTable object each time a new scope was opened (eg. when S00, S01, S04-S09 were executed).
+   This allowed us to track the currently active scope so we could add entries to the appropriate
+   SymbolTable when we needed to process a declaration. Each scope was also linked to its parent so
+   identifiers in parent scopes were also visible. We push a new SymbolTable for every major and minor as
+   it made the design easier. It was difficult to track identifier visibility when we tried to merge minor scopes
+   with its major scope.
+
+2) A stack of loops was also tracked to enable S50 and S53. Each time we visited a LoopStmt we pushed it on
+   the stack and every time we finished visiting it we popped it off the stack.
+
+3) A stack of routine declarations was also kept to enable checking if we were in function or procedure
+   for S51 and S52. Each time we visited a RoutineDecl we pushed it on the stack and each time we finished
+   we popped it off.
+
+All semantic checks specified in semantics.pdf were implemented. However some semantic checks such as S02,
+S14, S16, S44, and S45 were implemented as no-ops since it was easier to implement their functionality
+inside other semantic checks (eg. declarations were associated with the correct scope when they were
+added to the SymbolTable rather than in S02).
+
+Some semantic checks were skipped if one of the earlier semantic checks failed. For example, if a function
+call with parameters failed S40 then that means it's not an identifier for a function type. Therefore,
+it didn't make sense to report semantic errors for wrong argument types or incorrect number of arguments
+since there was no function to compare against in the first place.
+
+If an identifier was not declared we decided to report S37, S41, and S25 errors since we had to check IdentExpn
+to see if it was a variable, function call with no arguments, or a parameter. It wasn't clear in semantic.pdf
+which error we were supposed to report in this case.

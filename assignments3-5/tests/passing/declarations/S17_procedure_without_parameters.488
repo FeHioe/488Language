@@ -1,0 +1,8 @@
+% procedure without parameters
+{
+  procedure noop {
+    write "noop"
+    return
+  }
+  noop
+}

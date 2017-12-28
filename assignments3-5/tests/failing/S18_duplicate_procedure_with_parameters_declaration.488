@@ -1,0 +1,18 @@
+% Declaration of a function with no parameters with the same identifier
+% @ line 12
+
+{
+    procedure a1 (x : Boolean)
+    {
+        var y : Boolean
+        y := x
+        return
+    }
+
+    procedure a1 (x : Integer)
+    {
+        var y : Integer
+        y := x
+        return
+    }
+}

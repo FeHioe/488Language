@@ -1,0 +1,6 @@
+% Attempt to index (array) on a scalar variable
+% @ line 5
+{
+    var i : Integer
+    i[0] := 5
+}

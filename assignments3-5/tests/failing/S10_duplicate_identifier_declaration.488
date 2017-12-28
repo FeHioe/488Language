@@ -1,0 +1,9 @@
+% Declaring a new variable with the same identifier
+% @ line 8
+
+{
+    var x : Integer
+    var x : Boolean
+    x := 10
+
+}

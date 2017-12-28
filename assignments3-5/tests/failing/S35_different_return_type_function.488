@@ -1,0 +1,9 @@
+% Different return type than declared from function 
+% @ line 6
+{
+    function a1 (x : Integer): Integer
+    {
+        return with true
+    }
+    a1(5)
+}

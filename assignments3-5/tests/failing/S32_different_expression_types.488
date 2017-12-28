@@ -1,0 +1,9 @@
+% Different expression types for =
+% @ line 8
+{
+    var i : Integer
+
+    % Repeat loop
+    i := 0
+    repeat i := i + 1 until i = true
+}

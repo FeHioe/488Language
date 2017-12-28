@@ -1,0 +1,7 @@
+-1 ArithExpn NEG - Expected a = -1
+2 ArithExpn ADD - Expected a = 2
+0 ArithExpn SUB - Expected a = 0
+1 ArithExpn MUL - Expected a = 1
+1 ArithExpn DIV - Expected a = 1
+1 ArithExpn Combination - Expected a = 1
+

@@ -1,0 +1,7 @@
+% Different expression types for ternary operator
+% @ line 8
+{
+    var i : Integer
+    var j : Integer
+    j := (i > 0 ? true : 1)
+}

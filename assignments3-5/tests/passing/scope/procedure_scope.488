@@ -1,0 +1,11 @@
+% test procedure scope
+{
+  % procedure scope
+  procedure noop {
+    return
+    write "unreachable"
+  }
+  % statement required in scope when there is declaration
+  noop
+  write "Pass"
+}

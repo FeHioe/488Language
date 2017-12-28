@@ -1,0 +1,7 @@
+% Attempt to call a scalar variable as a function
+% @ line 5
+{
+    var x : Integer
+    var y : Integer
+    y := x(5)
+}

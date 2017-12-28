@@ -1,0 +1,8 @@
+% procedure with parameters
+{
+  procedure printResult ( value : Integer, value2 : Integer ) {
+    write value + value2 , newline
+    return
+  }
+  printResult( 1 , 123 )
+}

@@ -1,0 +1,13 @@
+% This is a snippet of the A1e submission for assignment 1 which contains the first syntax error
+% detected by the marking system.
+% It has a known syntax error due to a missing "then" in line 10.
+
+% Main program scope
+% Code was intentionally written with different styles to add more variability for the compiler testcases
+{
+  % Call recursive function with nested function
+  % and procedure declarations
+  if not recurseNested(15, true) {
+    write "recurseNested(15, true) failed"
+  }
+}

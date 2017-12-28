@@ -1,0 +1,6 @@
+% Attempt to assign scalar value to array
+% @ line 5
+{
+    var i [1..5] : Integer
+    i := true
+}

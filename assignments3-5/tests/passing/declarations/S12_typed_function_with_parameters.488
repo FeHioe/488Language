@@ -1,0 +1,9 @@
+% typed function with parameters
+{
+  function isEqual ( value1 : Integer, value2 : Integer ) : Boolean {
+    return with value1 = value2
+  }
+  var i : Boolean
+  i := isEqual(1, 1)
+  if i then write "IsEqual returned True"
+}

@@ -1,0 +1,6 @@
+% test scope containing only statement
+{
+  {
+    write 1
+  }
+}

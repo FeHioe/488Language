@@ -1,0 +1,16 @@
+% test multiple declarations of same identifier in different scopes
+% from piazza @149, but modified to write out only Integer variables
+% to conform with semantic rules.
+
+{ var i : Integer
+  i := 1
+  {   var i: Integer
+      i := 3
+      {  var i: Integer
+         i := 2
+         write i, " "
+         }
+      write i, " "
+     }
+  write i, " "
+}

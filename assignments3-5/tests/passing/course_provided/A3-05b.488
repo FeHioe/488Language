@@ -1,0 +1,19 @@
+% A3-05b.488
+% test nesting in declarations
+{
+       var X : Integer
+{      var a : Integer a := 1 X := a write X
+{      var b : Integer b := 1 X := a+b write X
+{      var c : Integer c := 1 X := a+b+c write X, newline
+{      var d : Integer d := 1 X := a+b+c+d write X
+{      var e : Integer e := 1 X := a+b+c+d+e write X
+{      var f : Integer f := 1 X := a+b+c+d+e+f write X, newline
+{      var g : Integer g := 1 X := a+b+c+d+e+f+g write X
+{      var h : Integer h := 1 X := a+b+c+d+e+f+g+h write X
+{      var i : Integer i := 1 X := a+b+c+d+e+f+g+h+i write X, newline
+{      var j : Integer j := 1 X := a+b+c+d+e+f+g+h+i+j write X, newline
+{      var k : Integer k := 1 X := a+b+c+d+e+f+g+h+i+j+k write X, newline
+{      var l : Integer l := 1 X := a+b+c+d+e+f+g+h+i+j+k+l write X, newline
+{      var m : Integer m := 1 X := a+b+c+d+e+f+g+h+i+j+k+l+m write X
+} }  }  }  }  }  }  }  }  }  }  }  }
+}

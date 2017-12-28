@@ -1,0 +1,5 @@
+% Declaration of array missing upper bound
+% @ line 4
+{
+  var missing_upper_bound [1..]: Integer
+}

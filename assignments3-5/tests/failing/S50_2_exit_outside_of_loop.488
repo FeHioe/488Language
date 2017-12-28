@@ -1,0 +1,7 @@
+% Exit not inside loop
+%  @ line 6
+{
+  var i : Integer
+  i := 0 
+  if i < 10 then exit
+}

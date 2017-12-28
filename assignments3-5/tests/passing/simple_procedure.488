@@ -1,0 +1,6 @@
+% simple procedure
+{
+  procedure noop { write "o" return }
+  write "hell"
+  noop
+}

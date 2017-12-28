@@ -1,0 +1,24 @@
+10 WhileLoop (true) - Expected i = 10
+5 WhileLoop (false) - Expected i = 5
+10 WhileLoop (exit) - Expected i = 10
+4 WhileLoop (exit when) - Expected i = 4
+10 WhileLoop (nested) - Expected j = 10
+10 WhileLoop (nested) - Expected i = 10
+2 WhileLoop (nested integer exit) - Expected j = 2
+1 WhileLoop (nested integer exit) - Expected i = 1
+2 WhileLoop (nested integer exit when) - Expected j = 2
+4 WhileLoop (nested integer exit when) - Expected i = 4
+10 Repeat - Expected i = 10
+5 Repeat (exit) - Expected i = 5
+4 Repeat (exit when) - Expected i = 4
+5 Repeat (nested) - Expected j = 5
+10 Repeat (nested) - Expected i = 10
+3 Repeat (nested integer exit) - Expected j = 3
+10 Repeat (nested integer exit) - Expected i = 10
+1 Repeat (nested integer exit when) - Expected j = 1
+4 Repeat (nested integer exit when) - Expected i = 4
+60 Mix while and repeat loops - Expected j = 60
+10 Mix while and repeat loops - Expected i = 10
+60 Mix while and repeat loops with exits - Expected j = 60
+10 Mix while and repeat loops with exits - Expected i = 10
+

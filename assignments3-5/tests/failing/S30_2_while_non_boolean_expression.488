@@ -1,0 +1,10 @@
+% Non boolean while condition
+% @ line 6
+{
+    var i : Integer
+    i := 0 
+    while 100 do 
+    {
+        if i < 10 then i := i + 1 else exit 1
+    }
+}

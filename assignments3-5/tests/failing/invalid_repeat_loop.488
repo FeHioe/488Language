@@ -1,0 +1,7 @@
+% Repeat loop - no expression
+% Errors on line 5
+{
+	var i : Integer
+	i := 0
+	repeat  until i = 10
+}

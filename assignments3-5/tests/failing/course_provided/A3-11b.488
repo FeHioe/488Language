@@ -1,0 +1,12 @@
+% A3-11b.488  
+% test statement checks
+{
+    var p, q : Boolean
+    var i , j : Integer
+    while true do {
+       procedure P ( i : Integer ) {
+          exit
+       }
+       P
+    }
+}

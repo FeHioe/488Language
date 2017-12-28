@@ -1,0 +1,13 @@
+% Errors regarding indexing of arrays
+% Should error on lines 7-11
+% Code was intentionally written with different styles to add more variability for the compiler testcases
+{
+  var arr [5] : Integer
+  
+  arr[1 := 5                      % missing bracket
+  arr[2] :: = -1                  % extra colon
+  arr[3] := arr4]                 % invalid value
+  arr[true] : arr[1] + arr[2]     % indexing at bool value
+  arr [arr[1]]] := 10             % extra bracket
+}
+

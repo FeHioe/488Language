@@ -1,0 +1,9 @@
+% loop with exit
+{
+  while true do
+  {
+    write 1
+    exit
+  }
+  write " out"
+}

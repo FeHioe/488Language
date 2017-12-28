@@ -1,0 +1,9 @@
+% Invalid call to procedure that has no parameters
+% @ line 8
+{
+    procedure a1 (x : Integer)
+    {
+        return 
+    }
+    a1(1000, false)
+}

@@ -1,0 +1,28 @@
+See code_generation_doc.txt for the index and a general overview of the Java
+classes we worked on for code generation in A5.
+
+Also see testing_doc_A5.txt for improvements to testing we did for A5
+
+Comprehensive implementation detail is provided in code comments in the
+relevant class and methods.
+
+Group member contributions:
+===============================
+
+Ishtiaque Khaled:
+- implemented code generation for expressions
+- performed some manual testing
+
+James Yuan:
+- Implemented code generation for statements, function/procedure calls, and function/procedure declarations
+- Improved automatic unit test script to detect more types of failures
+
+Felicia Hoie:
+
+Dawing Cho:
+- implemented code generation for expressions
+- added some additional test cases and expected output for testcases
+
+Sunny Li:
+- integrated changes in unit test script to diff expected and actual output for code generation
+- added some additional test cases and expected output for testcases

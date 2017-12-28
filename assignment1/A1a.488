@@ -1,0 +1,51 @@
+% A1 Part A: a program that uses all arithmetic, logical and comparison operators
+% Author: Ishtiaque Khaled - CDF: khaledi1
+
+
+% Main program scope
+% Code was intentionally written with different styles to add more variability for the compiler testcases
+{
+	var a : Integer
+	var c : Boolean
+
+	% Arithmetic operations 
+	% Written with various whitespaces between operators and variables
+	a : = 1
+
+	a := -1
+
+	a := 1+1
+
+	a : = 1-1
+
+	a : = 1 * 1
+
+	a := 1 / 1
+
+	a := 1 + 1 - 1 * 1 / 1
+
+	% Logical and comparison operators
+
+	c : = true
+	c : = false
+
+	c : = not true
+
+	c : = true and false
+
+	c : = true or false
+
+	c : = 1 = 1
+
+	c : = 1 not = 1
+
+	c : = 1 < 2
+
+	c : = 1 > 2
+
+	c : = 1 >= 1
+
+	c : = 1 <= 1
+
+
+}

@@ -1,0 +1,11 @@
+% Attempted indexing on scalar parameter value
+% @ line 7
+{
+    procedure a1 (x : Boolean)
+    {
+        var i : Boolean
+        i := x[5]
+        return
+    }
+    a1(true)
+}

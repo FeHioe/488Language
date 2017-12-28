@@ -1,0 +1,677 @@
+% 2-2
+% prologue code - 3b
+PUSHMT
+PUSH UNDEFINED
+SWAP
+PUSH (frame pointer)
+LOAD
+SWAP
+PUSH (display LL)
+LOAD
+SWAP
+DUP
+PUSH (display LL)
+SWAP
+STORE
+PUSH (frame pointer)
+SWAP
+STORE 
+
+% epilogue code - 3c
+PUSHMT
+PUSH (frame pointer)
+LOAD
+SUB
+PUSH 4            % control data
+ADD
+POPN
+SWAP
+PUSH (LL location)
+LOAD
+PUSH (M)
+SWAP
+SUB
+SWAP
+STORE
+SWAP
+PUSH (LL location)
+SWAP
+STORE
+BR
+
+% Local storage for 2-3
+PUSH UNDEFINED    % Integer a, offset = 4, LL = 0
+PUSH UNDEFINED    % Integer b, offset = 5, LL = 0
+PUSH UNDEFINED    % Integer c, offset = 6, LL = 0
+PUSH UNDEFINED    % Integer d, offset = 7, LL = 0
+
+% Local storage for 2-4
+PUSH UNDEFINED    % Boolean p, offset = 8, LL = 0
+PUSH UNDEFINED    % Boolean q, offset = 9, LL = 0
+PUSH UNDEFINED    % Boolean r, offset = 10, LL = 0
+
+% 2-5
+ADDR 0 5    % b addr
+LOAD        % b value
+ADDR 0 6    % c addr
+LOAD        % c value
+ADD         % b + c
+ADDR 0 7    % d addr
+LOAD        % d value
+ADDR 0 6    % c addr
+LOAD        % c value
+MUL         % d * c
+SUB         % b+c - d*c
+ADDR 0 5    % b addr
+LOAD        % b value
+ADDR 0 6    % c addr
+LOAD        % c value
+DIV         % b / c
+ADD         % b+c - d*c + b/c
+ADDR 0 4    % a :=
+SWAP
+STORE       % a := b + c - d*c + b/c
+
+% 2-6
+PUSH MACHINE_TRUE
+PUSH MACHINE_FALSE    % false
+SUB                   % not false
+PUSH MACHINE_TRUE
+ADDR 0 9              % q addr
+LOAD                  % q value
+SUB                   % not q
+OR                    % not false or not q
+PUSH (false addr)
+BF
+ADDR 0 10             % r addr
+LOAD                  % r value
+PUSH (false addr)
+BF
+PUSH MACHINE_TURE
+PUSH (addr after false)
+BR
+PUSH MACHINE_FALSE    % not false or not q and r
+ADDR 0 4              % p :=
+SWAP
+STORE                 % p := not false or not q and r
+
+% 2-7
+ADDR 0 8    % p addr
+LOAD        % p value
+PUSH (addr after true)
+BF
+PUSH 3
+ADDR 0 4    % a addr
+SWAP
+STORE       % a := 3
+            % after true
+
+% 2-8
+ADDR 0 8    % p addr
+LOAD        % p value
+PUSH MACHINE_TRUE
+ADDR 0 8    % p addr
+LOAD        % p value
+SUB         % not p
+OR          % p or not p
+PUSH (false addr)
+BF
+PUSH 2
+ADDR 0 5    % b addr
+SWAP
+STORE       % b := 2
+PUSH (after false)
+BR
+PUSH 0      % false addr
+ADDR 0 5    % b addr
+SWAP
+STORE       % b := 0
+            % after false
+
+% 2-9
+ADDR 0 6    % c addr - start of while
+LOAD        % c value
+PUSH 7
+LT          % c < 7
+PUSH (after loop)
+BF
+PUSH 6
+ADDR 0 6    % c addr
+SWAP
+STORE       % c := 6
+PUSH (jump back to start of while)
+BR          
+            % after loop
+
+% 2-10
+PUSH MACHINE_TRUE    % true - start of while
+PUSH (after loop)
+BF
+ADDR 0 5             % b addr
+LOAD                 % b value
+PUSH 1
+ADD                  % b + 1
+ADDR 0 5             % b addr
+SWAP
+STORE                % b := b + 1
+PUSH (jump back to start of while)
+BR          
+            % after loop
+
+% 2-11
+PUSH 3
+ADDR 0 4    % a addr - start of loop addr
+SWAP
+STORE       % a := 3
+PUSH (addr after loop) % exit
+BR
+PUSH 7
+ADDR 0 5    % b addr
+SWAP
+STORE       % b := 7
+PUSH MACHINE_FALSE
+PUSH (addr after loop)
+BF
+PUSH (start of loop addr)
+BR
+            % after loop
+
+% 2-12
+ADDR 0 9    % q addr - while start
+LOAD        % q value
+ADDR 0 10   % r addr
+LOAD        % r value
+OR          % q or r
+PUSH (false addr)
+BF
+PUSH MACHINE_TRUE
+ADDR 0 8    % p addr
+LOAD        % p value
+SUB         % not p
+PUSH (false addr)
+BF
+PUSH MACHINE_TRUE
+PUSH (after false)
+BR
+PUSH MACHINE_FALSE % q or r and not p - this is false addr
+PUSH (after while) % this is after false
+BF
+ADDR 0 5    % b addr
+LOAD        % b value
+PUSH 10
+OR          % b not= 10
+PUSH (after exit)
+BF
+PUSH (after while)
+BR
+PUSH (while start)
+BR
+            % after while
+
+% 2-13
+PUSH "V"
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+PUSH "a"
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+PUSH "l"
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+PUSH "u"
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+PUSH "e"
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+PUSH " "
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+PUSH "i"
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+PUSH "s"
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+PUSH " "
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+ADDR 0 4    % a addr
+LOAD        % a value
+ADDR 0 5    % b addr
+LOAD        % b value
+DIV         % a / b
+PRINTI
+PUSH " "
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+PUSH "o"
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+PUSH "r"
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+PUSH " "
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+PUSH "n"
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+PUSH "o"
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+PUSH "t"
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+PUSH " "
+DUP
+LOAD
+DUP
+PUSH 0 
+EQ
+PUSH (print exit)
+BF
+PRINTC
+PUSH 1
+ADD
+PUSH 2
+BR
+POP         % print exit
+POP
+PUSH 10     % newline
+PRINTC
+
+% 2-14
+READI
+ADDR 0 4    % a addr
+SWAP
+STORE
+READI
+ADDR 0 6    % c addr
+SWAP
+STORE
+READI
+ADDR 0 5    % b addr
+SWAP
+STORE
+
+% 2-16
+PUSH UNDEFINED    % Boolean a, offset = 11, LL = 0
+PUSH UNDEFINED    % Boolean b, offset = 12, LL = 0
+PUSH UNDEFINED    % Boolean c, offset = 13, LL = 0
+
+% 2-17
+PUSH MACHINE_TRUE
+ADDR 0 8          % p addr
+LOAD              % p value
+SUB               % not p
+ADDR 0 9          % q addr
+LOAD              % q value
+OR                % not p or q
+ADDR 0 11          % a := for minor scope
+SWAP
+STORE             % a := not p or q
+
+% 2-19
+PUSH UNDEFINED    % Boolean p, offset = 14, LL = 0
+PUSH UNDEFINED    % Boolean q, offset = 15, LL = 0
+PUSH UNDEFINED    % Boolean r, offset = 16, LL = 0
+
+% 2-20
+ADDR 0 12         % b addr for minor 1
+LOAD              % b value for minor 1
+PUSH (false addr)
+BF
+ADDR 0 15         % q addr for inner scope
+LOAD
+PUSH (after false addr)
+BR
+ADDR 0 16         % r addr for inner scope (false addr)
+LOAD
+ADDR 0 14         % p := for inner scope
+SWAP
+STORE             % p := ( b ? q : r )
+                  % after false addr
+
+% 2-21
+PUSH 3            % deallocate p, q, r in inner scope
+POPN
+
+% 2-22
+PUSH 3            % deallocate a, b, c in minor scope
+POPN
+
+% 2-23
+PUSH MACHINE_TRUE
+PUSH (after loop)
+BF
+(loop body)
+% 2-24
+ADDR 0 8    % p addr
+ADDR 0 10   % r addr
+OR          % p or r
+PUSH (addr after exit)     % exit
+BF
+PUSH (after loop)
+BR
+            % after exit
+
+% 2-25
+% 2-26
+PUSH UNDEFINED    % Boolean w, offset = 11, LL = 0
+PUSH UNDEFINED    % Boolean x, offset = 12, LL = 0
+
+% 2-27
+ADDR 0 11   % w addr
+LOAD        % w value
+ADDR 0 4    % a addr
+LOAD        % a value
+LT
+ADDR 0 11   % w addr
+LOAD        % w value
+ADDR 0 4    % a addr
+LOAD        % a value
+EQ
+OR          % w <= a
+PUSH (addr after true)
+BF
+PUSH 2
+POPN
+PUSH (after inner loop)
+BR
+BF
+            % after true
+
+% 2-28
+ADDR 0 8    % p addr
+LOAD        % p value
+ADDR 0 9    % q addr
+LOAD        % q value
+OR          % p or q
+ADDR 0 10   % r addr
+LOAD        % r value
+OR          % p or q or r
+PUSH (after inner loop)
+BF
+
+% 2-30
+PUSH UNDEFINED    % Boolean t, offset = 13, LL = 0
+PUSH UNDEFINED    % Boolean u, offset = 14, LL = 0
+
+% 2-31
+PUSH MACHINE_TRUE
+ADDR 0 9    % q addr
+SUB         % not q
+ADDR 0 8    % p :=
+SWAP
+STORE       % p := not q
+
+% 2-32
+ADDR 0 8    % p addr
+ADDR 0 9    % q addr
+OR          % p or q
+PUSH (false addr)
+BF
+ADDR 0 13    % t addr
+LOAD
+PUSH 1
+ADD         % t + 1
+PUSH (after false)
+BR
+ADDR 0 13    % t addr (false addr)
+LOAD
+PUSH 1
+SUB         % t - 1
+ADDR 0 13   % t addr
+SWAP
+STORE       %  t := ( p or q ? t + 1 : t - 1 )
+
+% 2-33
+PUSH 12
+LOAD 0 13   % t addr
+LT          % t > 12
+PUSH (after exit)
+BF
+PUSH 4
+POPN
+PUSH (after nested loops)
+BR
+
+% 2-34
+PUSH 2
+POPN
+
+PUSH (start of inner loop)
+BR
+                 % after inner loop
+
+% 2-35
+PUSH 2
+POPN
+PUSH (after nested loop)
+BR
+
+% 2-36
+PUSH 2
+POPN
+ADDR 0 8    % p addr
+LOAD
+PUSH (false addr)
+BF
+ADDR 0 10   % r addr
+LOAD
+PUSH (false addr)
+BF
+PUSH MACHINE_TRUE
+PUSH (after false)
+BR
+           % after false
+
+PUSH (after repeat)
+BF
+PUSH (start of loop)
+BR
+                 % after repeat loop
+
+% 2-37
+PUSH (start of loop)
+BR
+                 % after loop
+
+% 2-38
+POP 7
+POPN
+
+HALT

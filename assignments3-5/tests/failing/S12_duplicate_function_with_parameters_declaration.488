@@ -1,0 +1,14 @@
+% Declaration of a function with parameters with the same identifier
+% @ line 10
+
+{
+    function a1 (x : Integer): Integer
+    {
+        return with x
+    }
+
+    function a1 (x : Integer): Integer
+    {
+        return with x + 2
+    }
+}

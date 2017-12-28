@@ -1,0 +1,6 @@
+%Error with scope on line 3
+
+var j : Integer
+
+j := 0
+if 3 < 7 then j := 2

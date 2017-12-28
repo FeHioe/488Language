@@ -1,0 +1,84 @@
+This index should give a one line summary of the purpose of each test.
+Put all tests that you expect to pass (no errors) in a subdirectory tests/passing
+Put all tests that you expect to fail (i.e. detect an error) in a
+subdirectory tests/failing.
+
+For passing tests in assignment 5, we have also added write statements in some
+of the test cases to verify that intermediate computations are correct. See documentation/testing_doc.txt
+and documentation/testing_doc_a5.txt for detailed explanations of our testing methodology.
+
+## Passing (Names truncated)
+passing/A1a.488             Tests all logical, comparison, and arithmetic operators.
+passing/A1b.488             Tests using arrays including all forms of array declaration, positive and negative bounds.
+passing/A1c.488             Tests all forms of loop building and loop exit constructs.
+passing/A1d.488             Tests non-recursive functions and procedures with and without parameters.
+passing/A1e.488             Tests recursive functions and procedures with and without parameters, including at least one nested procedure and one nested function declaration.
+
+passing/declarations.488            Tests a mix of S10 to S48 within one scope.
+passing/expressions.488             Tests a mix of S20 to S39
+passing/statement_checking.488      Tests S50 and S53.
+passing/simple_recursion_pass.488   Tests function declarations and types within recursion.
+
+passing/course_provided/A3-05b.488  Tests nesting in declarations (new in A5, added due to failure in A3)
+passing/course_provided/A3-10.488   Tests a variety of statements (new in A5, added due to failure in A3)
+
+passing/scope/empty_scope.488       Tests S00, S01
+passing/scope/nested_scopes.488     Tests S06, S07
+passing/scope/sibling_scopes.488    Tests S06, S07
+passing/scope/function_scope.488    Tests S02, S04, S05
+passing/scope/procedure_scope.488   Tests S02, S08, S09
+passing/scope/nested_statement.488  Tests scope with only statement but no declaration
+
+passing/declarations/S10.488        Tests valid declaration of variables within multiple scopes.
+passing/declarations/S11.488        Tests valid typed function without parameters.
+passing/declarations/S12.488        Tests valid typed function with parameters.
+passing/declarations/S15.488        Tests valid typed function with different types of parameters.
+passing/declarations/S17.488        Tests valid procedure without parameters.
+passing/declarations/S18.488        Tests valid procedure with parameters.
+passing/declarations/S19.488        Tests multiple ways of array variable declaration.
+
+passing/statement_checking/S50.488            Tests loop with exit
+passing/statement_checking/S53_1.488          Tests ability to exit out of nested loops
+passing/statement_checking/S53_2.488          Tests for exiting only some of the nested loops.
+passing/statement_checking/simple_write.488   Tests writing text constants (new in A5)
+
+## Failing (Names truncated)
+failing/S10.488             Tests duplicate declaration with the same identifier.
+failing/S11.488             Tests duplicate declaration of a function with no parameters with the same identifier.
+failing/S12.488             Same as above, with the function having parameters.
+failing/S15.488             Tests for multiple function parameters with the same identifier name.
+failing/S17.488             Tests duplicate declaration of a procedure with no parameters with the same identifier.
+failing/S18.488             Same as above, with the procedure having parameters.
+failing/S19.488             Tests declaration of array without specified bounds.
+failing/S30_1.488           Tests non-Boolean expression in if condition.
+failing/S30_2.488           Tests non-Boolean expression in while condition.
+failing/S30_3.488           Tests non-Boolean expression in repeat condition.
+failing/S31_1.488           Tests non-integer output for function.
+failing/S31_2.488           Tests non-integer expressions.
+failing/S32.488             Tests expressions with different types.
+failing/S33.488             Tests for both result conditionals being different types.
+failing/S34.488             Tests that the variable and expression in assignment are different types.
+failing/S35.488             Tests for different return type than declared in function.
+failing/S36.488             Tests for invalid parameter type passed into procedure.
+failing/S37_1.488           Tests for invalid assignment of scalar to function.
+failing/S37_2.488           Tests for invalid assignment of scalar to array.
+failing/S37_3.488           Tests for invalid assignment of scalar after the scope where it is declared ends.
+failing/S38.488             Tests for invalid use of an array variable.
+failing/S39_1.488           Tests for invalid use of a parameter to a procedure.
+failing/S39_2.488           Tests for invalid use of a parameter to a function.
+failing/S40.488             Tests for invalid use of a function.
+failing/S41.488             Tests for invalid use of a procedure.
+failing/S42_1.488           Tests for invalid call to a  function with no parameters.
+failing/S42_2.488           Tests for invalid call to a  procedure with no parameters.
+failing/S43_1.488           Tests for invalid call to a  procedure with too many arguments.
+failing/S43_2.488           Tests for invalid call to a  procedure with too many arguments.
+failing/S46.488             Tests for declaration of array with the lower bound greater than upper bound.
+failing/S50_1.488           Tests for usage of `exit` within the procedure but not the enclosing loop.
+failing/S50_2.488           Tests for usage of `exit` not within an enclosing loop.
+failing/S51.488             Tests for usage of `return with` not within an enclosing function.
+failing/S52_1.488           Tests for usage of `return` within a function, not within a procedure.
+failing/S52_2.488           Tests for usage of `return` not within an enclosing procedure.
+failing/S53_1.488           Tests for exiting of loop scope with Integer higher than number of enclosing scopes.
+
+## Failing (tests provided by the course):
+failing/course_provided/A3-11b.488    Tests for invalid exit statement.

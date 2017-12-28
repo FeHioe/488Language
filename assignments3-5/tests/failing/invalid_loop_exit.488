@@ -1,0 +1,11 @@
+%Invalid exit when
+{
+	% While loop - exit when 
+	var i : Integer
+	i := 0
+	while i < 10 do 
+	{
+		i := i + 1
+		exit when %no expression
+	}
+}

@@ -1,0 +1,20 @@
+Symbol Table Design Document
+
+We chose to use a HashMap of <String, SymbolTableEntry> to keep track of the symbols in the current table.
+This made sense because we should have unique identifiers, and this would make retrieval simpler. To enable
+child scopes, we used a LinkedList of SymbolTables: to add an entry to the current scope/SymbolTable, we look
+at the last table in the LinkedList of scopes. We have methods to add/remove minor scopes, which boil down to
+adding/removing elements in the LinkedList. These are utilized when creating minor scopes such as loops and
+procedures. They are removed when the block of code has resolved. We keep track of scope by using an associated
+Integer that is incremented when a new scope is added. Major scopes are also tracked by the parentScope variable.
+
+SymbolTableEntry
+
+Each SymbolTableEntry has the identifier, kind (e.g., "variable", "function", etc.), AST value, the next
+symbol, and logical address associated. We also created some new classes that represent the symbol type
+(src/compiler488/symbol/type/SymbolType) which are used to check for the correct types in semantic analysis.
+The SymbolType represents a base class that other subclasses derive from, to represent each of the different
+possible symbol types. For example, we use the CallableSymbolType when we create a SymbolTableEntry from a
+RoutineDecl node. We check for the Kind of node it is(function or procedure), and assign the table entry's
+type as a CallableSymbolType, which will indicate what the return type of the node will be. When we create
+an entry from an ArrayDeclPart node, we use the ArraySymbolType to assign the lower and upper bounds for the array.

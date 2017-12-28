@@ -1,0 +1,17 @@
+% Exit from loop integer is greater than # of containing loops
+% @ line 14
+{
+    var i : Integer
+    var j : Integer
+    i := 0
+    while i < 10 do 
+    {
+        i := i + 1
+        j := 0
+        while j < 10  do 
+        {
+            j := j + 2
+            exit 100 % exit both loops
+        }
+    }
+}

@@ -1,0 +1,14 @@
+% Exit is not directly inside a loop
+% @ line 9
+
+{
+    while true do
+    {
+        procedure A 
+        {
+        }
+        var x: Integer
+        x := 5
+    }
+    exit
+}

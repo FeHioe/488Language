@@ -1,0 +1,7 @@
+% no statement
+% Error on line 7
+{
+  procedure noop {
+    return
+  }
+}

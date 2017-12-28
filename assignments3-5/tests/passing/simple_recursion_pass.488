@@ -1,0 +1,20 @@
+% test passing simple recursion
+
+{
+    function fib (x : Integer) : Integer
+    {
+        if (x < 2) then
+        {
+            return with x
+        } else
+        {
+            return with fib(x-1) + fib(x-2)
+        }
+    }
+
+    var i : Integer
+    i := fib(10)
+
+    if (i = 55) then
+        write "Pass"
+}

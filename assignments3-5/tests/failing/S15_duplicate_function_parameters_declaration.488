@@ -1,0 +1,11 @@
+% Declaration of a function with multiple parameters that have the same identifier name
+% @ line 5
+
+{
+    function a1 (x : Integer, x: Integer): Integer
+    {
+        return with x
+    }
+    var x : Integer
+    a1(3, 5)
+}

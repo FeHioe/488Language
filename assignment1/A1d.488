@@ -1,0 +1,70 @@
+% A1 Part D: a program using non-recursive functions and procedures with and without parameters
+% Author: Sunny Li - CDF: liding2
+
+% Main program scope
+% Code was intentionally written with different styles to add more variability for the compiler testcases
+{
+  %%
+  % sequence of declarations
+  %%
+
+  % declare non-recursive function with parameters
+  function isEqual ( value1 : Integer, value2 : Integer ) : Boolean 
+  {
+    return with value1 = value2
+  }
+
+  % declare non-recursive function without parameters
+  function get_input : Integer 
+  {
+    var value : Integer
+    read value
+    return with value
+  }
+
+  % declare non-recursive procedures with parameter
+  procedure printInt ( value : Integer ) 
+  {
+    write value , newline
+    return
+  }
+
+  % declare non-recursive procedures without parameters
+  procedure noop 
+  {
+    return
+
+    % unreachable code test
+    write "FAIL - unreachable code executed."
+  }
+
+  % should not conflict with variable with the same name in other scopes
+  var value : Integer
+  var user_input : Integer
+
+  %%
+  % sequence of statements
+  % using the function and procedures declared above
+  %%
+
+  value := 1
+  write "Please enter an integer: " , newline
+
+  % invoke non-recursive function without parameters
+  user_input := get_input
+  write newline , "User input "
+
+  % invoke non-recursive function with parameters
+  if ( isEqual ( value , user_input ) )
+  then
+    write "matches"
+  else
+    write "does not match"
+
+  % invoke non-recursive procedures without parameters
+  noop
+  write " the hard coded value "
+
+  % invoke non-recursive procedures with parameter
+  printInt ( value )
+}

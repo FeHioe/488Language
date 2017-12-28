@@ -1,0 +1,9 @@
+% typed function without parameters
+{
+  function give_me_five : Integer {
+    return with 5
+  }
+  var i : Integer
+  i := give_me_five
+  write i
+}

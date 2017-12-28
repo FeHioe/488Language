@@ -1,0 +1,29 @@
+% Test handling of a series/combinations of expression types
+{
+  {
+    var one : Integer
+    var count : Integer
+    var bool : Boolean
+    var arr[1..10] : Boolean
+
+    one := 1
+    arr[9] := ((0 = 0? false : true)? false : 1=1)
+    bool := false
+    count := one + 0
+
+    repeat {
+      write "count: ", count, newline
+      bool := (count > 5 ? count : one) > count
+      count := count + 1
+    } until count > 10
+  }
+
+  {
+    function test (i : Integer, b : Boolean) : Boolean {
+      return with (i < 8) = b
+    }
+
+    var res : Boolean
+    res := (test(1, true) = test(8, false)) = (test(8, true) = test(9, true))
+  }
+}

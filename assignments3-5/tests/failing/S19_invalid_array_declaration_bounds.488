@@ -1,0 +1,7 @@
+% Errors that occur when declaring arrays with incorrect bounds
+% Should error out on lines 5-6
+% Code was intentionally written with different styles to add more variability for the compiler testcases
+{
+  var invalid_upper_bound [-1..true]: Integer
+  invalid_upper_bound[1] := 5
+}

@@ -1,0 +1,9 @@
+%Invalid while - no statement
+% Errors on line 3
+{
+	while  do 
+	{
+	i := i + 1
+	exit when i = 4 
+	}
+}

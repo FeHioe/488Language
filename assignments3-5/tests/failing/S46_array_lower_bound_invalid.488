@@ -1,0 +1,6 @@
+% Array declaration with lower bound > upper bound
+% @ line 5
+{
+  var invalid_lower_bound [10..5]: Integer
+  invalid_lower_bound[10] := 3
+}

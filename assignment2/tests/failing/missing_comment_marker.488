@@ -1,0 +1,13 @@
+% This is a snippet of the A1e submission for assignment 1 which contains the first syntax error
+% detected by the marking system.
+% It has a known syntax error due to a missing comment marker in line 6.
+
+% A1 Part E: a program using recursive functions and procedures with and without parameters
+             include at least one nested procedure and one nested function declaration
+% Author: James Yuan - CDF: yuanjam1
+
+% Main program scope
+% Code was intentionally written with different styles to add more variability for the compiler testcases
+{
+  output "no-op"
+}

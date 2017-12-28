@@ -1,0 +1,9 @@
+% Return with outside of function, within function
+%  @ line 6
+{
+    function a1: Integer
+    {
+        return with 5
+    }
+    return with 5            
+}

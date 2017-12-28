@@ -1,0 +1,12 @@
+% Test for the bad if-statement example in language.pdf
+% Should error out on line 9.
+
+{
+    if true
+    then
+        write "hello"
+        write "world"
+    else
+        write "no-op"
+    write "end"
+}

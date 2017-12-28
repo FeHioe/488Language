@@ -1,0 +1,152 @@
+% Assignment 1 Part C: a program using all forms of loop building and loop exit constructs.
+% Author: Felicia Hioe - CDF: hioefeli
+
+% Main program scope begins
+% Code was intentionally written with different styles to add more variability for the compiler testcases
+{
+	var i : Integer
+	var j : Integer
+
+	% While loop - expression true
+	i := 0
+	while i < 10 do i := i + 1
+
+	% While loop - expression false
+	i := 5
+	while i > 10 do i := i + 1 % Should not execute 
+
+	% While loop - exit
+	i := 0 
+	while i < 10 do 
+	{
+		if i < 3 then i := i + 1 else exit
+	}
+	
+	% While loop - exit when 
+	i := 0
+	while i < 10 do 
+	{
+		i := i + 1
+		exit when i = 4
+	}
+
+	% While loop - nested
+	i := 0
+	while i < 10 do {
+		i := i + 1
+		j := 0
+		while j < 10  do 
+		{
+			j := j + 2
+		}
+	}
+
+	% While loop - nested integer exit
+	i := 0
+	while i < 10 do 
+	{
+		i := i + 1
+		j := 0
+		while j < 10  do 
+		{
+			j := j + 2
+			exit 2 % exit both loops
+		}
+	}
+
+	% While loop - nested integer exit when
+	i := 0
+	while i < 10 do 
+	{
+		i := i + 1
+		j := 0
+		while j < 10  do 
+		{
+			j := j + 2
+			exit 2 when i = 4 % exit both loops
+		}
+	}
+
+	% Repeat loop
+	i := 0
+	repeat i := i + 1 until i = 10
+
+	% Repeat loop - exit
+	i := 0 
+	repeat 
+	{
+		if i < 5 then i := i + 1 else exit 
+	} until i = 10 
+
+	% Repeat loop - exit when
+	i := 0 
+	repeat 
+	{
+		i := i + 1
+		exit when i = 4
+	} until i = 10 
+
+	% Repeat loop - nested
+	i := 0
+	repeat 
+	{
+		i := i + 1
+		j := 0 
+		repeat j := j + 1 until j = 5
+	} until i = 10
+
+	% Repeat loop - nested integer exit
+	i := 0
+	repeat 
+	{
+		i := i + 1
+		j := 0 
+		repeat 
+		{
+			if j < 3 then j := j + 1 else exit 1 % exit one loop
+		} until j = 5
+	} until i = 10
+
+	% Repeat loop - nested integer exit when
+	i := 0
+	repeat 
+	{
+		i := i + 1
+		j := 0 
+		repeat 
+		{
+			j := j + 1
+			exit 2 when i = 4 % exit both loops
+		} until j = 5
+	} until i = 10
+
+	% Mixing while and repeat loops
+	i := 0
+	j := 0
+
+	while i < 10 do
+	{
+		repeat
+		{
+			j := j + 1
+
+		} until j = 5
+		i := i + 1
+	}
+
+	% Mixing while and repeat with exits
+	while i < 10 do
+	{
+		repeat
+		{
+			j := j + 1
+			exit 2 when i = 4 % exit both loops
+
+		} until j = 5
+		i := i + 1
+	}
+
+}
+
+
+% Main program scope ends

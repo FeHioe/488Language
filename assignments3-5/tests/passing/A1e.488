@@ -1,0 +1,151 @@
+% A1 Part E: a program using recursive functions and procedures with and without parameters
+%            include at least one nested procedure and one nested function declaration
+% Author: James Yuan - CDF: yuanjam1
+
+% Main program scope
+% Code was intentionally written with different styles to add more variability for the compiler testcases
+{
+  %%
+  % sequence of declarations
+  %%
+
+  % declare recursive function with parameters
+  function countDown(currCount : Integer) : Integer {
+    if currCount = 1 then
+    {
+      write "recursion reached base case", newline
+      return with currCount
+    }
+    else
+    {
+      write "still recursing...", newline
+      return with countDown(currCount -  1)
+    }
+  }
+
+  % declare recursive function without parameters
+  function noParam : Boolean
+  {
+    var readVal : Integer
+
+    write "Awaiting input with val 10", newline
+    read readVal
+
+    if readVal = 10 then
+    {
+      write "Found magic value", newline
+      return with true
+    }
+
+    write "Read in value ", readVal
+
+    return with noParam
+  }
+
+  % declare recursive procedure with parameters
+  procedure writeUntilCount(numTimes : Integer)
+  {
+    if numTimes = 0 then {
+      write "Done writing", newline
+    } else
+    {
+      write "Still need to write ", numTimes, " times", newline
+      writeUntilCount(numTimes - 1)
+    }
+
+    return
+  }
+
+  % declare recursive procedure without parameters
+  procedure noParamProcedure
+  {
+    var continueReading : Boolean
+    var magicVal : Integer
+
+    write "Awaiting input with magicVal = 5", newline
+    read magicVal
+    continueReading := false
+
+    if not continueReading and magicVal = 5 then
+    {
+      write "Found magic value ", newline
+      return
+    }
+    else
+    {
+      write "Continue reading... ", newline
+      write "Read in value ", magicVal, newline
+      noParamProcedure
+      return
+    }
+  }
+
+  % declare recursive function with nested procedure
+  % and function declaration
+  function recurseNested(magicVal1 : Integer,
+                         magicVal2 : Boolean) : Boolean
+  {
+    procedure dummyProc
+    {
+      write "dummyProc in recurseNested"
+      return
+    }
+
+    function dummyFunc(val : Integer) : Boolean
+    {
+      write "dummyFunc in recurseNested printing: ", val
+      return with true
+    }
+
+    var inputVal1 : Integer
+    var inputVal2 : Boolean
+
+    inputVal2 := true
+
+    write "Awaiting input...", newline
+    read inputVal1
+
+    if inputVal2 = magicVal2 then {
+      var x : Boolean
+      x := dummyFunc(inputVal1)
+      return with true
+    } else {
+      dummyProc
+      return with recurseNested(magicVal1 / 2, not magicVal2)
+    }
+  }
+
+  var value : Integer
+  var boolRet : Boolean
+
+  %%
+  % sequence of statements
+  % using the function and procedures declared above
+  %%
+
+  % Call recursive function with parameters
+  value := countDown(10)
+  if value = 1 then
+    write "Got expected return value from countDown(10)", newline
+  else
+    write "Expected return value of 1 from countDown(10) but got ",
+          value, newline
+
+  % Call recursive function without parameters
+  boolRet := false
+  boolRet := noParam
+  if not boolRet then
+    write "noParam should always return true but returned false"
+
+  % Call recursive procedure with parameters
+  writeUntilCount(7)
+
+  % Call recursive procedure without parameters
+  noParamProcedure
+
+  % Call recursive function with nested function
+  % and procedure declarations
+  if not recurseNested(15, true) then {
+    write "recurseNested(15, true) failed"
+  }
+}

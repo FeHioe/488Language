@@ -1,0 +1,70 @@
+% A1 Part B: a program using all forms of array declaration, positive and negative bounds
+% Dawing Cho - cdf: chodawin
+% Code was intentionally written with different styles to add more variability for the compiler testcases
+{
+  % Single integer
+  % Legal indices: arr[1], arr[2]...arr[5]
+  var arr_base [5]: Integer
+  var arr_base2 [10]: Boolean
+  var b: Integer
+  var c: Boolean 
+  % Pair of integers
+  % Legal indices: arr[3], arr[4], arr[5]
+  var arr_positive_bounds [3..5]: Integer
+
+  % Legal indices: arr[-3], arr[-2], arr[-1]
+  var arr_negative_bounds [-3..-1]: Integer
+
+  % Legal indices: arr[-1], arr[0] ... arr[5]
+  var arr_negative_positive_bounds [-1..5]: Integer
+
+  % Legal indices: arr[-32767] ... arr[32767]
+  % Can't actually declare this as it's large than the size of the runtime stack.
+  % var arr_max_bounds [-32767..32767]: Integer
+
+  % Same upper and lower bounds - an array of size 0
+  var arr_same_bounds [2..2]: Integer
+
+
+  % Array assignment and indexing - final value: [5, -1, true, 4, 10]
+  arr_base[1] := 5
+  arr_base[2] := -1
+  arr_base[5 - 1] := arr_base[1] + arr_base[2]
+  arr_base [arr_base[1]] := 10
+  arr_base2[3] := true
+
+
+  b := arr_base[1]
+
+  write b, " Array IntConstExpn - Expected arr_base[1] = 5", newline
+
+  b := arr_base[2]
+  write b, " Array IntConstExpn - Expected arr_base[2] = -1", newline
+
+  b := arr_base[5 - 1]
+  write b, " Array SubsExpn - Expected arr_base[5 - 1] = 4", newline
+
+  b := arr_base [arr_base[1]]
+  write b, " Array Indexing - Expected arr_base[arr_base[1]] = 10", newline
+
+  c := arr_base2[3]
+
+  % Error cases; these were commented out so no errors arise during compilation
+  % These will be used later on as test cases for our compiler
+
+  % Implicit lower bound is 1 for single digit arrays - unsure of behaviour here
+  % var arr_negative_integer [-3]: Integer
+
+  % Upper bound invalid
+  % var arr_invalid_upper [1, -2]: Integer
+  % var arr_invalid_lower [-2, -50]: Integer
+
+  % Array of size larger than min/max integer bounds
+  % var arr_bound_over_min [-99999] : Integer
+  % var arr_bound_over_max [99999]: Integer
+  % var arr_lower_bound_over_min [-99999, 10]: Integer
+  % var arr_upper_bound_over_max [-10, 99999]: Integer
+
+  % Index out of bounds
+  % arr_same_bounds[0] := 0
+}

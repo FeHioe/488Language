@@ -1,0 +1,17 @@
+% function with parameters of different types
+{
+  function getBool ( value1 : Integer, value2 : Boolean ) : Boolean {
+    return with value2
+  }
+
+  function getInt ( value1 : Integer, value2 : Boolean ) : Integer {
+    return with value1
+  }
+
+  var i : Boolean
+  var j : Integer
+
+  i := getBool(1, true)
+  j := getInt(0, false)
+  write j, newline
+}

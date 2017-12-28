@@ -1,0 +1,6 @@
+% Attempt to call a scalar variable as a procedure
+% @ line 5
+{
+    var x : Integer
+    x(5)
+}

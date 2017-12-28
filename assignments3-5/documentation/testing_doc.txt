@@ -1,0 +1,47 @@
+Testing Document
+
+For the passing tests, we used some straightforward tests to verify some of the
+basic semantic checks and potential corner cases. These included simple
+declaration, and some scope tests. Test cases for certain semantic analysis
+operation were not included if its use case has already been verified numerous
+of times in prior test cases of other semantic operations.
+e.g) "S51: return inside a function" is not explicitly checked since this was
+already implicitly checked whenever we use a function in the other test cases.
+
+For assignment 5, we additionally added write statements to most of the passing
+test cases to check if the program computations are correct. The output of the
+compiled program execution will be captured by our test script and be compared
+with the expected output we have written into file with the same name as the
+test file but with the '.out' extension.
+
+Our focus for failing tests was to run through the possible semantic checks, and
+verify that we performed the specified checks correctly. The test cases were
+primarily small and contained. Each of the failing tests were named by the
+associated semantic check that it should fail along with a small description,
+and a comment that indicates which line that it should fail on.
+
+Some of the tests from the previous assignment were reused, but some had syntax
+errors instead so they were expected to not fail at the semantic level.
+
+We used a python script (tests/unit_test.py) to run through tests in passing and
+failing directories, and it output whether the test passed when it should not
+have, and vice versa. Additionally, it will check if the output of the program
+matches what we expect when we provide the expected output file.
+
+The automatic test script can be run by executing python tests/unit_test.py
+from the root directory of the repository. The expected output for all tests passing is:
+
+Testing cases that should pass semantic check:
+All test cases passed!
+Testing cases that should fail semantic check:
+All test cases passed!
+Verifying program write statement output:
+All test cases checked has expected output!
+
+If there were test cases that failed semantic checks when they should pass then they
+would be displayed under
+"Testing cases that should pass semantic check:"
+
+Similarly if there are test cases that pass semantic checks when they should fail the then
+they would be displayed under:
+"Testing cases that should fail semantic check:"

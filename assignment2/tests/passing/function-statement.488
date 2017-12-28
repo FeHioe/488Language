@@ -1,0 +1,13 @@
+% Test case where we declare a function and then call it like a statement.
+% This is not allowed in the language but the parser cannot disambiguate
+% a procedure from a function since they are both just identifiers.
+
+{
+    function dummyFunc(val : Integer) : Boolean
+    {
+        write "dummyFunc in recurseNested printing:", val
+        return with true
+    }
+
+    dummyFunc
+}

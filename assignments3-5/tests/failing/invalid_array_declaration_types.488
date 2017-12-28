@@ -1,0 +1,9 @@
+% Errors that occur when declaring arrays with incorrect types
+% Should error on lines 5-8
+% Code was intentionally written with different styles to add more variability for the compiler testcases
+{
+  var bool_bound [true] : Boolean
+  var text_bound ["1"] : Integer
+  var invalid_type [2]: "Boolean"
+  var missing_type [2]: 
+}

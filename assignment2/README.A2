@@ -1,0 +1,35 @@
+Assignment 2 - LALR(1) parser
+==============================
+
+For this assignment we decided that we would each convert the grammar to LALR
+individually and then submit our solutions to our individual branches on GitHub.
+Once our submissions were available we peer reviewed each others' solutions and
+then merged the best solutions as our final submission. We decided that this was
+the best method to allow us to review a wide range of solutions and so each
+of us could become intimately familiar with every problem in the original
+grammar.
+
+
+Member contributions:
+-------------------------
+- Sunny Li (liding2):
+    * Added initial CSC488 grammar (with ambiguity) to the csc488.cup file
+    * Added few simple passing and failing tests
+    * Peer reviewed other team member's submissions
+- James Yuan (yuanjam1):
+    * Posted LALR grammar solution
+    * Added passing and failing tests for source files containing recursive functions
+    * Peer reviewed other team member's submissions
+- Felicia Hioe (hioefeli)
+    * Posted LALR grammar solution
+    * Added passing and failing tests for files containing loop functions
+- Dawing Cho (chodawin)
+    * Worked on own grammar solution but was unable to resolve expression conflicts
+    * Added passing and failing tests for files containing arrays
+- Ishtiaque Khaled (khaledi1)
+    * Added sample solutions for expression associativity and precedence
+    * Added sample solutions for disambiguating statements
+    * Added passing and failing testcases for programs involving arithmetic operations
+
+Our parser resides in `./src/compiler488/parser/csc488.cup`.
+Our test cases resides in `./tests/passing` and `./tests/failing` respectively.

@@ -1,0 +1,12 @@
+%  Scalar variable declaration (nested scopes)
+
+{
+    var x : Integer
+    x := 1
+    {
+        var x : Integer
+        x := 2
+        write x
+    }
+    write x
+}

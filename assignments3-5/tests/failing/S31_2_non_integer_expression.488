@@ -1,0 +1,16 @@
+% Non Integer expressions
+% @ lines after 7
+{
+    var i : Integer
+    var j : Integer
+
+    i := 0
+    j := i + true
+    j := true - i
+    j := true / i
+    j := i * false
+    j := i < false
+    j := i <= false
+    j := true > false
+    j := true >= i
+}
